@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Salud Mental en la Fe — Participa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set, push, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA91o4CJrJ8Cz2fASwrmMh4rZg1NenYwuY",
+    authDomain: "salud-mental-fe.firebaseapp.com",
+    databaseURL: "https://salud-mental-fe-default-rtdb.firebaseio.com",
+    projectId: "salud-mental-fe",
+    storageBucket: "salud-mental-fe.firebasestorage.app",
+    messagingSenderId: "82434998420",
+    appId: "1:82434998420:web:75b74e0e2611b28a30b481"
+  };
+
+  // Expose to non-module scripts
+  window.__firebase = {
+    initializeApp, getDatabase, ref, onValue, set, push, remove, serverTimestamp,
+    firebaseConfig
+  };
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+<style>
+:root {
+  --bg-1: #0e2418;
+  --bg-2: #163a25;
+  --bg-3: #1f5232;
+  --accent-gold: #d4b87a;
+  --accent-gold-light: #e8d29c;
+  --accent-warm: #95b88a;
+  --accent-cream: #ecead0;
+  --text-light: #ecead0;
+  --text-soft: #d2dbb8;
+  --text-dim: #94a894;
+  --success: #7ce085;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  min-height: 100vh;
+  font-family: var(--sans);
+  background: var(--bg-1);
+  color: var(--text-light);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 184, 122, 0.10), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.15), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 100% 30%, rgba(31, 82, 50, 0.35), transparent 70%),
+    var(--bg-1);
+  padding-bottom: 4rem;
+}
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.header {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid rgba(212, 184, 122, 0.15);
+  margin-bottom: 2rem;
+}
+.eyebrow {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 0.95rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  opacity: 0.9;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text-light);
+  letter-spacing: -0.01em;
+}
+h1 .italic {
+  font-style: italic;
+  color: var(--accent-gold-light);
+}
+.intro {
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+/* === EJERCICIO: 4 escenarios === */
+.escenario {
+  margin-bottom: 2rem;
+  background: rgba(20, 35, 64, 0.4);
+  border: 1px solid rgba(212, 184, 122, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.4s ease;
+}
+.escenario.answered {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(20, 35, 64, 0.6);
+}
+.escenario-num {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.escenario-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(212, 184, 122, 0.4), transparent);
+}
+.escenario-texto {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-light);
+  margin-bottom: 1.2rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--accent-gold);
+}
+.opciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+.opcion {
+  padding: 0.9rem 0.4rem;
+  background: transparent;
+  border: 1px solid rgba(212, 184, 122, 0.3);
+  color: var(--text-soft);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 400;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+.opcion:active { transform: scale(0.96); }
+.opcion:hover {
+  background: rgba(212, 184, 122, 0.1);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-light);
+}
+.opcion.selected {
+  background: rgba(212, 184, 122, 0.2);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-light);
+}
+.opcion.correct {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: var(--success);
+  color: var(--success);
+}
+.opcion.wrong {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.5);
+  color: rgba(248, 113, 113, 0.9);
+}
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: none;
+}
+.feedback.show { display: block; animation: fadeIn 0.4s ease; }
+.feedback.correct {
+  background: rgba(74, 222, 128, 0.08);
+  border-left: 2px solid var(--success);
+  color: var(--success);
+}
+.feedback.wrong {
+  background: rgba(248, 113, 113, 0.06);
+  border-left: 2px solid rgba(248, 113, 113, 0.6);
+  color: var(--text-soft);
+}
+.feedback strong {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* === ACTIVIDAD: PALABRAS === */
+.palabras-input-card {
+  background: rgba(20, 35, 64, 0.5);
+  border: 1px solid rgba(212, 184, 122, 0.25);
+  border-radius: 12px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+}
+.palabras-prompt {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--text-light);
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+.palabras-prompt .italic-strong {
+  color: var(--accent-gold-light);
+  font-weight: 500;
+}
+.input-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+input[type="text"] {
+  flex: 1;
+  padding: 1rem 1.2rem;
+  background: rgba(236, 234, 208, 0.05);
+  border: 1px solid rgba(212, 184, 122, 0.3);
+  color: var(--text-light);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 300;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+}
+input[type="text"]:focus {
+  border-color: var(--accent-gold);
+  background: rgba(236, 234, 208, 0.08);
+}
+input[type="text"]::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+button.send-btn {
+  padding: 1rem 1.5rem;
+  background: var(--accent-gold);
+  border: none;
+  color: var(--bg-1);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.05em;
+}
+button.send-btn:active { transform: scale(0.97); }
+button.send-btn:hover { background: var(--accent-gold-light); }
+button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.palabras-enviadas {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(212, 184, 122, 0.15);
+  text-align: left;
+}
+.palabras-enviadas-title {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
+}
+.palabras-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.chip {
+  background: rgba(212, 184, 122, 0.15);
+  border: 1px solid rgba(212, 184, 122, 0.3);
+  padding: 0.4rem 0.8rem;
+  border-radius: 100px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  animation: chipIn 0.4s ease;
+}
+
+/* === RESUMEN FINAL DEL EJERCICIO === */
+.resumen-card {
+  display: none;
+  margin-top: 2rem;
+  background: linear-gradient(135deg, rgba(212, 184, 122, 0.15), rgba(212, 184, 122, 0.05));
+  border: 1px solid var(--accent-gold);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+.resumen-card.show { display: block; }
+.resumen-score {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  color: var(--accent-gold-light);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.resumen-score .total { color: var(--text-dim); font-size: 0.6em; }
+.resumen-label {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-soft);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.resumen-msg {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.gracias-msg {
+  margin-top: 2rem;
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(212, 184, 122, 0.15);
+}
+.gracias-msg p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.gracias-msg .verse-ref {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-size: 0.85em;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes chipIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--accent-gold);
+  color: var(--bg-1);
+  padding: 0.8rem 1.5rem;
+  border-radius: 100px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.error-banner {
+  display: none;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: rgba(248, 113, 113, 0.9);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-family: var(--sans);
+}
+.error-banner.show { display: block; }
+
+/* Loader inicial */
+.loader {
+  text-align: center;
+  padding: 4rem 1rem;
+  display: none;
+}
+.loader.show { display: block; }
+.loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(212, 184, 122, 0.2);
+  border-top-color: var(--accent-gold);
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-soft);
+  font-size: 1.1rem;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="eyebrow">Salud mental en la fe</div>
+    <h1 id="pageTitle">Participa <span class="italic">con nosotros</span></h1>
+  </header>
+
+  <!-- ===================================== -->
+  <!-- VISTA: EJERCICIO (cuatro escenarios)  -->
+  <!-- ===================================== -->
+  <div id="vistaEjercicio" style="display:none;">
+    <p class="intro">
+      Lee con calma cada situación. ¿Crees que describe <em>tristeza</em>,
+      <em>depresión</em> o <em>ansiedad</em>?
+    </p>
+
+    <div id="errorBanner" class="error-banner"></div>
+
+    <div class="escenario" data-id="1" data-correcta="ansiedad">
+      <div class="escenario-num">Escenario 01</div>
+      <p class="escenario-texto">
+        "Tengo el corazón acelerado, las manos me sudan y siento como si algo
+        malo fuera a pasar. No puedo dejar de pensar en el examen de mañana."
+      </p>
+      <div class="opciones">
+        <button class="opcion" data-valor="tristeza">Tristeza</button>
+        <button class="opcion" data-valor="depresion">Depresión</button>
+        <button class="opcion" data-valor="ansiedad">Ansiedad</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="escenario" data-id="2" data-correcta="tristeza">
+      <div class="escenario-num">Escenario 02</div>
+      <p class="escenario-texto">
+        "Mi mejor amigo se mudó de país la semana pasada. Lo extraño mucho y
+        me dan ganas de llorar, pero sé que con el tiempo me sentiré mejor."
+      </p>
+      <div class="opciones">
+        <button class="opcion" data-valor="tristeza">Tristeza</button>
+        <button class="opcion" data-valor="depresion">Depresión</button>
+        <button class="opcion" data-valor="ansiedad">Ansiedad</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="escenario" data-id="3" data-correcta="depresion">
+      <div class="escenario-num">Escenario 03</div>
+      <p class="escenario-texto">
+        "Hace meses que no disfruto nada. Me cuesta levantarme, ya no quiero
+        ver a mis amigos, y siento que mi vida no tiene sentido."
+      </p>
+      <div class="opciones">
+        <button class="opcion" data-valor="tristeza">Tristeza</button>
+        <button class="opcion" data-valor="depresion">Depresión</button>
+        <button class="opcion" data-valor="ansiedad">Ansiedad</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="escenario" data-id="4" data-correcta="ansiedad">
+      <div class="escenario-num">Escenario 04</div>
+      <p class="escenario-texto">
+        "Antes de hablar en público me cuesta respirar, tiemblo y evito a toda
+        costa estas situaciones. Mi mente se imagina lo peor."
+      </p>
+      <div class="opciones">
+        <button class="opcion" data-valor="tristeza">Tristeza</button>
+        <button class="opcion" data-valor="depresion">Depresión</button>
+        <button class="opcion" data-valor="ansiedad">Ansiedad</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="resumen-card" id="resumenCard">
+      <div class="resumen-score"><span id="aciertos">0</span><span class="total">/4</span></div>
+      <div class="resumen-label">respuestas acertadas</div>
+      <p class="resumen-msg" id="resumenMsg">
+        Aprender a distinguir lo que sentimos es el primer paso para sanar.
+        Gracias por participar con tu corazón abierto.
+      </p>
+    </div>
+
+    <div class="gracias-msg">
+      <p>«El que habita al abrigo del Altísimo morará bajo la sombra del Omnipotente».
+        <span class="verse-ref">— Salmo 91:1</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================================== -->
+  <!-- VISTA: PALABRAS (nube de palabras)    -->
+  <!-- ===================================== -->
+  <div id="vistaPalabras" style="display:none;">
+    <p class="intro">
+      Cuando piensas en la palabra <em>depresión</em>,
+      ¿qué viene a tu mente?
+    </p>
+
+    <div id="errorBanner2" class="error-banner"></div>
+
+    <div class="palabras-input-card">
+      <p class="palabras-prompt">
+        Escribe una palabra<br>
+        <span class="italic-strong">o una sensación</span>
+      </p>
+      <div class="input-row">
+        <input type="text" id="palabraInput" placeholder="ej. soledad, vacío, oscuridad..." maxlength="40" autocomplete="off" />
+        <button class="send-btn" id="palabraBtn">Enviar</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-dim);font-style:italic;margin-top:0.5rem;">
+        Puedes enviar tantas como quieras.
+      </p>
+
+      <div class="palabras-enviadas" id="palabrasEnviadasBox" style="display:none;">
+        <div class="palabras-enviadas-title">Tus palabras compartidas:</div>
+        <div class="palabras-chips" id="palabrasChips"></div>
+      </div>
+    </div>
+
+    <div class="gracias-msg">
+      <p>«Echando toda vuestra ansiedad sobre él,<br>porque él tiene cuidado de vosotros».
+        <span class="verse-ref">— 1 Pedro 5:7</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- VISTA: DEFAULT (sin parámetro) -->
+  <div id="vistaDefault" style="display:none;">
+    <p class="intro">
+      Para participar, escanea el código QR mostrado en la presentación.
+    </p>
+    <div style="text-align:center;margin-top:2rem;">
+      <p style="font-family:var(--serif);font-style:italic;color:var(--accent-gold);font-size:1.2rem;line-height:1.6;">
+        «Bienaventurados los que lloran,<br>porque ellos recibirán consolación».<br>
+        <span style="font-size:0.85em;color:var(--text-dim);letter-spacing:0.2em;">— MATEO 5:4</span>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============================================
+  //   ROUTING POR PARÁMETRO ?actividad=
+  // ============================================
+  const params = new URLSearchParams(window.location.search);
+  const actividad = params.get('actividad');
+
+  const pageTitle = document.getElementById('pageTitle');
+
+  if (actividad === 'ejercicio') {
+    document.getElementById('vistaEjercicio').style.display = 'block';
+    pageTitle.innerHTML = 'Identifica <span class="italic">la emoción</span>';
+  } else if (actividad === 'palabras') {
+    document.getElementById('vistaPalabras').style.display = 'block';
+    pageTitle.innerHTML = '¿Qué evoca <span class="italic">la depresión?</span>';
+  } else {
+    document.getElementById('vistaDefault').style.display = 'block';
+  }
+
+  // ============================================
+  //   TOAST
+  // ============================================
+  const toast = document.getElementById('toast');
+  let toastTimeout;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ============================================
+  //   FIREBASE INIT
+  // ============================================
+  let db = null;
+  let firebaseModule = null;
+  let firebaseReady = false;
+  let firebaseError = false;
+
+  function waitForFirebase(callback) {
+    if (window.__firebase) callback();
+    else setTimeout(() => waitForFirebase(callback), 100);
+  }
+
+  waitForFirebase(() => {
+    try {
+      firebaseModule = window.__firebase;
+      const app = firebaseModule.initializeApp(firebaseModule.firebaseConfig);
+      db = firebaseModule.getDatabase(app);
+      firebaseReady = true;
+    } catch (e) {
+      console.log('Firebase no inicializado, usando localStorage:', e.message);
+      firebaseError = true;
+    }
+  });
+
+  // ============================================
+  //   ID único del participante (para no duplicar)
+  // ============================================
+  let participanteId = sessionStorage.getItem('participante_id');
+  if (!participanteId) {
+    participanteId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('participante_id', participanteId);
+  }
+
+  // ============================================
+  //   EJERCICIO: lógica de respuestas
+  // ============================================
+  if (actividad === 'ejercicio') {
+    const escenarios = document.querySelectorAll('.escenario');
+    const respuestas = {};
+    let aciertosTotales = 0;
+
+    const explicaciones = {
+      ansiedad: {
+        correct: 'Correcto. La <strong>ansiedad</strong> incluye anticipación de peligro, síntomas físicos (taquicardia, sudoración) y miedo a algo que aún no ocurre.',
+        wrong: 'Es un caso de <strong>ansiedad</strong>: síntomas físicos intensos y miedo anticipatorio a una situación futura.'
+      },
+      tristeza: {
+        correct: 'Correcto. La <strong>tristeza</strong> es una emoción natural ante una pérdida, con duración limitada y conciencia de que pasará.',
+        wrong: 'Es <strong>tristeza</strong>: emoción natural ante una pérdida, proporcional y temporal, con esperanza de mejorar.'
+      },
+      depresion: {
+        correct: 'Correcto. La <strong>depresión</strong> es persistente (meses), afecta el funcionamiento y trae pérdida de sentido y desconexión.',
+        wrong: 'Es <strong>depresión</strong>: tristeza persistente que afecta el día a día, con pérdida de interés y sensación de vacío profundo.'
+      }
+    };
+
+    escenarios.forEach(escenario => {
+      const opciones = escenario.querySelectorAll('.opcion');
+      const feedback = escenario.querySelector('.feedback');
+      const correcta = escenario.dataset.correcta;
+      const id = escenario.dataset.id;
+
+      opciones.forEach(op => {
+        op.addEventListener('click', () => {
+          if (respuestas[id]) return; // ya respondió
+
+          const valor = op.dataset.valor;
+          respuestas[id] = valor;
+          escenario.classList.add('answered');
+
+          opciones.forEach(o => o.disabled = true);
+
+          const acierta = valor === correcta;
+          if (acierta) {
+            op.classList.add('correct');
+            feedback.classList.add('correct', 'show');
+            feedback.innerHTML = explicaciones[correcta].correct;
+            aciertosTotales++;
+          } else {
+            op.classList.add('wrong');
+            // marcar la correcta
+            opciones.forEach(o => {
+              if (o.dataset.valor === correcta) o.classList.add('correct');
+            });
+            feedback.classList.add('wrong', 'show');
+            feedback.innerHTML = explicaciones[correcta].wrong;
+          }
+
+          // Guardar respuesta
+          guardarRespuestaEjercicio(id, valor, correcta, acierta);
+
+          // Si ya respondió todos, mostrar resumen
+          if (Object.keys(respuestas).length === escenarios.length) {
+            setTimeout(() => {
+              const resumenCard = document.getElementById('resumenCard');
+              document.getElementById('aciertos').textContent = aciertosTotales;
+              let msg = '';
+              if (aciertosTotales === 4) msg = '¡Excelente! Has logrado discernir cada situación con claridad. Esa sensibilidad es un gran don.';
+              else if (aciertosTotales === 3) msg = 'Muy bien. Distinguir entre estos estados es un aprendizaje continuo. Cada acierto suma.';
+              else if (aciertosTotales === 2) msg = 'Estás aprendiendo. No es fácil diferenciar emociones intensas. Lo importante es nunca dejar de preguntar.';
+              else msg = 'No te preocupes. Saber pedir ayuda y reconocer que no sabemos todo es el primer paso de la sabiduría.';
+              document.getElementById('resumenMsg').textContent = msg;
+              resumenCard.classList.add('show');
+              resumenCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }, 800);
+          }
+        });
+      });
+    });
+
+    function guardarRespuestaEjercicio(escenarioId, valor, correcta, acierto) {
+      const data = {
+        participante: participanteId,
+        escenario: escenarioId,
+        respuesta: valor,
+        correcta: correcta,
+        acierto: acierto,
+        timestamp: Date.now()
+      };
+
+      if (firebaseReady) {
+        try {
+          const { ref, push, set, serverTimestamp } = firebaseModule;
+          const newRef = push(ref(db, 'ejercicio/respuestas'));
+          set(newRef, { ...data, timestamp: serverTimestamp() });
+        } catch (e) {
+          guardarLocal('ejercicio_respuestas', data);
+        }
+      } else {
+        guardarLocal('ejercicio_respuestas', data);
+      }
+    }
+  }
+
+  // ============================================
+  //   PALABRAS: lógica de envío
+  // ============================================
+  if (actividad === 'palabras') {
+    const input = document.getElementById('palabraInput');
+    const btn = document.getElementById('palabraBtn');
+    const enviadasBox = document.getElementById('palabrasEnviadasBox');
+    const chipsContainer = document.getElementById('palabrasChips');
+    const palabrasEnviadas = [];
+
+    function enviarPalabra() {
+      const texto = input.value.trim();
+      if (!texto) return;
+      if (texto.length < 2) {
+        showToast('Escribe al menos 2 letras');
+        return;
+      }
+      if (palabrasEnviadas.includes(texto.toLowerCase())) {
+        showToast('Ya enviaste esa palabra');
+        return;
+      }
+
+      palabrasEnviadas.push(texto.toLowerCase());
+
+      // Agregar chip visualmente
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = texto;
+      chipsContainer.appendChild(chip);
+      enviadasBox.style.display = 'block';
+
+      // Guardar
+      const data = {
+        participante: participanteId,
+        palabra: texto,
+        timestamp: Date.now()
+      };
+
+      if (firebaseReady) {
+        try {
+          const { ref, push, set, serverTimestamp } = firebaseModule;
+          const newRef = push(ref(db, 'palabras/lista'));
+          set(newRef, { ...data, timestamp: serverTimestamp() });
+        } catch (e) {
+          guardarLocal('palabras_lista', data);
+        }
+      } else {
+        guardarLocal('palabras_lista', data);
+      }
+
+      input.value = '';
+      input.focus();
+      showToast('Palabra enviada');
+    }
+
+    btn.addEventListener('click', enviarPalabra);
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        enviarPalabra();
+      }
+    });
+  }
+
+  // ============================================
+  //   FALLBACK localStorage (modo demo / sin internet)
+  // ============================================
+  function guardarLocal(key, data) {
+    try {
+      const lista = JSON.parse(localStorage.getItem(key) || '[]');
+      lista.push(data);
+      localStorage.setItem(key, JSON.stringify(lista));
+    } catch(e) { console.error(e); }
+  }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="bosque">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Salud Mental en la Fe — Presentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="js/qrcode-generator.js"></script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set, push, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA91o4CJrJ8Cz2fASwrmMh4rZg1NenYwuY",
+    authDomain: "salud-mental-fe.firebaseapp.com",
+    databaseURL: "https://salud-mental-fe-default-rtdb.firebaseio.com",
+    projectId: "salud-mental-fe",
+    storageBucket: "salud-mental-fe.firebasestorage.app",
+    messagingSenderId: "82434998420",
+    appId: "1:82434998420:web:75b74e0e2611b28a30b481"
+  };
+
+  // Expose to non-module scripts
+  window.__firebase = {
+    initializeApp, getDatabase, ref, onValue, set, push, remove, serverTimestamp,
+    firebaseConfig
+  };
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+<style>
+  /* ============================================
+     SISTEMA DE TEMAS
+     ============================================ */
+  :root,
+  [data-theme="noche"] {
+    --bg-1: #0a1628;
+    --bg-2: #142340;
+    --bg-3: #1d3257;
+    --accent-gold: #d4a574;
+    --accent-gold-light: #e8c89f;
+    --accent-warm: #c9826b;
+    --accent-cream: #f5ebd9;
+    --text-light: #f5ebd9;
+    --text-soft: #d9c9a8;
+    --text-dim: #8a9ab0;
+    --glow-1: rgba(212, 165, 116, 0.08);
+    --glow-2: rgba(201, 130, 107, 0.06);
+    --glow-3: rgba(29, 50, 87, 0.4);
+    --grain-color: rgba(245, 235, 217, 0.02);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, sans-serif;
+  }
+
+  [data-theme="bosque"] {
+    --bg-1: #0e2418;
+    --bg-2: #163a25;
+    --bg-3: #1f5232;
+    --accent-gold: #d4b87a;
+    --accent-gold-light: #e8d29c;
+    --accent-warm: #95b88a;
+    --accent-cream: #ecead0;
+    --text-light: #ecead0;
+    --text-soft: #d2dbb8;
+    --text-dim: #94a894;
+    --glow-1: rgba(212, 184, 122, 0.10);
+    --glow-2: rgba(149, 184, 138, 0.16);
+    --glow-3: rgba(31, 82, 50, 0.55);
+    --grain-color: rgba(236, 234, 208, 0.02);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    font-family: var(--sans);
+    background: var(--bg-1);
+    color: var(--text-light);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    transition: background 0.8s ease, color 0.8s ease;
+  }
+
+  /* Fondo atmosférico con gradientes radiales suaves */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 30%, var(--glow-1), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 70%, var(--glow-2), transparent 70%),
+      radial-gradient(ellipse 100% 70% at 50% 100%, var(--glow-3), transparent);
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, var(--grain-color) 1px, transparent 1px),
+      radial-gradient(circle at 90% 80%, var(--grain-color) 1px, transparent 1px);
+    background-size: 60px 60px, 100px 100px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ============================================
+     SELECTOR DE TEMA
+     ============================================ */
+  .theme-switcher {
+    position: fixed;
+    top: 3vh;
+    right: calc(3vw + 120px);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: opacity 0.4s ease, border-color 0.6s ease;
+  }
+
+  .theme-switcher:hover {
+    border-color: rgba(212, 165, 116, 0.4);
+  }
+
+  .theme-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+    position: relative;
+  }
+
+  .theme-dot:hover {
+    transform: scale(1.15);
+  }
+
+  .theme-dot.active {
+    border-color: var(--accent-gold-light);
+    transform: scale(1.1);
+  }
+
+  .theme-dot[data-target="noche"] {
+    background: radial-gradient(circle at 30% 30%, #1d3257 0%, #0a1628 70%);
+    box-shadow: 0 0 6px rgba(232, 200, 159, 0.3);
+  }
+
+  .theme-dot[data-target="bosque"] {
+    background: radial-gradient(circle at 30% 30%, #1d4530 0%, #0d1f17 70%);
+    box-shadow: 0 0 6px rgba(138, 168, 130, 0.4);
+  }
+
+  .theme-dot::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .theme-dot:hover::after {
+    opacity: 1;
+  }
+
+  /* ============================================
+     PARTÍCULAS GLOBALES (polen del bosque)
+     ============================================ */
+  .ambient-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  [data-theme="bosque"] .ambient-particles {
+    opacity: 1;
+  }
+
+  .pollen {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 210, 156, 0.95) 0%, rgba(232, 210, 156, 0.5) 40%, transparent 70%);
+    box-shadow: 0 0 8px rgba(232, 210, 156, 0.6), 0 0 16px rgba(232, 210, 156, 0.3);
+    will-change: transform, opacity;
+    top: -20px;
+  }
+
+  @keyframes pollen-fall {
+    0% {
+      transform: translate3d(0, -30px, 0);
+      opacity: 0;
+    }
+    8% { opacity: 1; }
+    50% {
+      transform: translate3d(30px, 50vh, 0);
+    }
+    92% { opacity: 0.85; }
+    100% {
+      transform: translate3d(-20px, 110vh, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pollen-drift {
+    0%, 100% { margin-left: 0; }
+    25% { margin-left: 18px; }
+    50% { margin-left: -10px; }
+    75% { margin-left: 14px; }
+  }
+
+  /* Niebla sutil solo en bosque */
+  .forest-mist {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 90% 35% at 50% 100%, rgba(149, 184, 138, 0.18), transparent 70%),
+      radial-gradient(ellipse 50% 30% at 10% 90%, rgba(149, 184, 138, 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 35% at 85% 85%, rgba(149, 184, 138, 0.10), transparent 70%);
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  [data-theme="bosque"] .forest-mist {
+    opacity: 1;
+  }
+
+  /* Contenedor principal de slides */
+  .slides-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 6vw;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.9s;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+    z-index: 2;
+  }
+
+  .slide.active .reveal { animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .slide.active .reveal-1 { animation-delay: 0.2s; }
+  .slide.active .reveal-2 { animation-delay: 0.45s; }
+  .slide.active .reveal-3 { animation-delay: 0.7s; }
+  .slide.active .reveal-4 { animation-delay: 0.95s; }
+  .slide.active .reveal-5 { animation-delay: 1.2s; }
+  .slide.active .reveal-6 { animation-delay: 1.45s; }
+
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(28px); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  @keyframes breathe-in {
+    from { transform: scale(0.85); }
+    to { transform: scale(1.2); }
+  }
+
+  @keyframes breathe-hold {
+    from, to { transform: scale(1.2); }
+  }
+
+  @keyframes breathe-out {
+    from { transform: scale(1.2); }
+    to { transform: scale(0.85); }
+  }
+
+  @keyframes floatGently {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+  }
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  /* === HEADER COMÚN === */
+  .slide-marker {
+    position: absolute;
+    top: 3vh;
+    left: 4vw;
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .slide-marker span {
+    color: var(--accent-gold);
+    font-style: italic;
+    font-size: 1.1em;
+  }
+
+  /* === SLIDE 1: TÍTULO === */
+  #slide-1 {
+    text-align: center;
+  }
+
+  #slide-1 .ornament {
+    width: 4px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+    margin: 0 auto 3vh;
+    opacity: 0.8;
+  }
+
+  #slide-1 .eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+    color: var(--accent-gold);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    margin-bottom: 2vh;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  #slide-1 .eyebrow-sub {
+    display: inline-block;
+    margin-top: 0.4em;
+    font-size: 0.78em;
+    color: var(--text-soft);
+    letter-spacing: 0.18em;
+    font-style: normal;
+    font-weight: 300;
+  }
+
+  #slide-1 h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7.5vw, 7.5rem);
+    font-weight: 400;
+    line-height: 0.95;
+    color: var(--text-light);
+    letter-spacing: -0.02em;
+    margin-bottom: 3vh;
+  }
+
+  #slide-1 h1 .italic {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent-gold-light);
+  }
+
+  #slide-1 .presenters {
+    margin-top: 2vh;
+    max-width: 600px;
+  }
+
+  #slide-1 .presenters-ornament {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
+    margin: 0 auto 1.5vh;
+    opacity: 0.7;
+  }
+
+  #slide-1 .presenters-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.8rem, 1vw, 1rem);
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1.2vh;
+  }
+
+  #slide-1 .presenters-names {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 1.8vw, 1.65rem);
+    font-weight: 400;
+    color: var(--text-light);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  #slide-1 .presenters-sep {
+    color: var(--accent-gold);
+    opacity: 0.7;
+    font-size: 1em;
+    display: inline-block;
+    margin: 0 0.5em;
+    vertical-align: middle;
+  }
+
+  /* Estrellas/luz decorativa para slide 1 */
+  #slide-1 .stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+  }
+  #slide-1 .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--accent-gold-light);
+    border-radius: 50%;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  [data-theme="bosque"] #slide-1 .stars {
+    opacity: 0;
+  }
+
+  /* === SLIDE 2: DINÁMICA CORPORAL === */
+  #slide-2 .container {
+    max-width: 1400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 400;
+    color: var(--text-light);
+    margin-bottom: 1vh;
+    letter-spacing: -0.01em;
+  }
+
+  .section-title .italic {
+    font-style: italic;
+    color: var(--accent-gold-light);
+  }
+
+  .section-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+    color: var(--text-soft);
+    margin-bottom: 4vh;
+    font-weight: 400;
+  }
+
+  .dinamica-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    margin-top: 2vh;
+  }
+
+  .dinamica-card {
+    padding: 3vh 1.5vw;
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    border-radius: 4px;
+    background: rgba(20, 35, 64, 0.4);
+    backdrop-filter: blur(10px);
+    transition: all 0.5s ease;
+  }
+
+  .dinamica-icon {
+    font-size: clamp(3rem, 5vw, 5rem);
+    margin-bottom: 2vh;
+    display: block;
+  }
+
+  .dinamica-label {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2vw, 2rem);
+    font-weight: 500;
+    color: var(--accent-gold);
+    margin-bottom: 1.5vh;
+    letter-spacing: 0.02em;
+  }
+
+  .dinamica-action {
+    font-family: var(--sans);
+    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    color: var(--text-soft);
+    font-weight: 300;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+  }
+
+  /* === SLIDE 3: VIDEO === */
+  #slide-3 {
+    padding: 0;
+  }
+
+  #slide-3 .video-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 6vw;
+  }
+
+  #slide-3 .video-intro {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: clamp(1rem, 1.4vw, 1.3rem);
+    margin-bottom: 2vh;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  #slide-3 .video-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    color: var(--text-light);
+    margin-bottom: 3vh;
+    text-align: center;
+  }
+
+  #slide-3 .video-title .italic {
+    font-style: italic;
+    color: var(--accent-gold-light);
+  }
+
+  #slide-3 .video-frame {
+    width: 85%;
+    max-width: 1100px;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 165, 116, 0.2);
+    position: relative;
+  }
+
+  #slide-3 .video-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #slide-3 .video-caption {
+    margin-top: 3vh;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    text-align: center;
+    max-width: 700px;
+  }
+
+  /* === SLIDES 4 y 7: QR INTERACTIVO === */
+  .qr-slide {
+    text-align: center;
+  }
+
+  .qr-slide .container {
+    max-width: 1300px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 5vw;
+    align-items: center;
+  }
+
+  .qr-text-side {
+    text-align: left;
+  }
+
+  .qr-text-side .title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--text-light);
+    margin-bottom: 3vh;
+  }
+
+  .qr-text-side .title .italic {
+    font-style: italic;
+    color: var(--accent-gold-light);
+    display: block;
+  }
+
+  .qr-text-side .description {
+    font-family: var(--sans);
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    color: var(--text-soft);
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 3vh;
+  }
+
+  .qr-steps {
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .qr-steps li {
+    counter-increment: step;
+    padding: 1.2vh 0 1.2vh 3.5rem;
+    position: relative;
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    color: var(--text-soft);
+    border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+    font-weight: 300;
+  }
+
+  .qr-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--accent-gold);
+    font-style: italic;
+  }
+
+  .qr-visual-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .qr-card {
+    background: var(--accent-cream);
+    padding: 2.5vh 2vw;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 165, 116, 0.3);
+    position: relative;
+  }
+
+  .qr-card::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid var(--accent-gold);
+    border-radius: 16px;
+    opacity: 0.3;
+  }
+
+  .qr-card-header {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--bg-1);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    margin-bottom: 1.5vh;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  .qr-canvas-container {
+    background: white;
+    padding: 1.5vh;
+    border-radius: 4px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-canvas-container canvas,
+  .qr-canvas-container img {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 320px;
+  }
+
+  .qr-canvas-container .qr-placeholder {
+    color: #8a99b3;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+  }
+
+  .qr-url {
+    margin-top: 1.5vh;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.65rem, 0.85vw, 0.8rem);
+    color: var(--bg-1);
+    word-break: break-all;
+    padding: 0.5rem 0.8rem;
+    background: rgba(212, 165, 116, 0.08);
+    border: 1px dashed rgba(212, 165, 116, 0.3);
+    border-radius: 3px;
+    cursor: text;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .qr-url:focus,
+  .qr-url:hover {
+    background: rgba(212, 165, 116, 0.15);
+    border-color: rgba(212, 165, 116, 0.55);
+    color: var(--accent-cream);
+  }
+
+  .qr-regen-hint {
+    margin-top: 0.8vh;
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(245, 235, 217, 0.45);
+    letter-spacing: 0.05em;
+  }
+
+  .qr-counter {
+    margin-top: 3vh;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--accent-gold);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+  }
+
+  .qr-counter .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4ade80;
+    animation: pulse-soft 1.8s ease-in-out infinite;
+    box-shadow: 0 0 10px #4ade80;
+  }
+
+  .dashboard-link {
+    margin-top: 1.2vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.78rem, 0.9vw, 0.9rem);
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 184, 122, 0.15);
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .dashboard-link:hover {
+    color: var(--accent-gold-light);
+    border-color: rgba(212, 184, 122, 0.4);
+    background: rgba(212, 184, 122, 0.06);
+  }
+
+  .dashboard-link::before {
+    content: '↗';
+    font-size: 0.9em;
+    opacity: 0.7;
+    font-style: normal;
+  }
+
+  /* === SLIDES DE IMAGEN === */
+  .image-slide {
+    padding: 4vh 4vw;
+  }
+
+  .image-slide .container {
+    max-width: 1400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .image-slide .image-frame {
+    margin-top: 3vh;
+    max-width: 90%;
+    max-height: 65vh;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 165, 116, 0.2);
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+  }
+
+  .image-slide .image-frame img {
+    display: block;
+    max-width: 100%;
+    max-height: 65vh;
+    width: auto;
+    height: auto;
+  }
+
+  /* === SLIDE: PRIMEROS AUXILIOS === */
+  #slide-9 .container {
+    max-width: 1300px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .auxilios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vw;
+    margin-top: 4vh;
+  }
+
+  .auxilio-card {
+    padding: 3vh 2vw;
+    border: 1px solid rgba(212, 165, 116, 0.25);
+    border-radius: 8px;
+    background: rgba(20, 35, 64, 0.4);
+    backdrop-filter: blur(10px);
+    text-align: left;
+    position: relative;
+  }
+
+  .auxilio-number {
+    position: absolute;
+    top: -1.5rem;
+    left: 2rem;
+    width: 3rem;
+    height: 3rem;
+    background: var(--bg-1);
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-gold);
+    font-size: 1.4rem;
+  }
+
+  .auxilio-title {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2vw, 2rem);
+    color: var(--accent-gold-light);
+    margin-bottom: 2vh;
+    font-weight: 500;
+    padding-top: 1vh;
+  }
+
+  .auxilio-title .italic { font-style: italic; }
+
+  .auxilio-list {
+    list-style: none;
+  }
+
+  .auxilio-list li {
+    padding: 1vh 0 1vh 1.8rem;
+    position: relative;
+    font-family: var(--sans);
+    font-size: clamp(0.85rem, 1.05vw, 1rem);
+    color: var(--text-soft);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .auxilio-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.6vh;
+    width: 8px;
+    height: 1px;
+    background: var(--accent-gold);
+  }
+
+  /* === SLIDE: RESPIRACIÓN 4-7-8 === */
+  #slide-10 .container {
+    max-width: 1100px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .breathing-orb-container {
+    margin: 4vh auto;
+    position: relative;
+    width: clamp(280px, 35vh, 400px);
+    height: clamp(280px, 35vh, 400px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .breathing-orb {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(232, 200, 159, 0.25), rgba(212, 165, 116, 0.15) 40%, transparent 70%);
+    border: 1px solid rgba(212, 165, 116, 0.4);
+    transition: transform 0.5s ease;
+  }
+
+  .breathing-orb.inner {
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle at 30% 30%, rgba(245, 235, 217, 0.3), rgba(212, 165, 116, 0.2) 50%, transparent);
+    border-color: rgba(232, 200, 159, 0.5);
+  }
+
+  .breathing-orb.core {
+    width: 35%;
+    height: 35%;
+    background: radial-gradient(circle, rgba(245, 235, 217, 0.5), rgba(212, 165, 116, 0.3));
+    border: none;
+  }
+
+  .breathing-orb.animating {
+    animation-iteration-count: infinite;
+  }
+
+  .breathing-text {
+    position: absolute;
+    z-index: 5;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .breathing-phase {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--text-light);
+    margin-bottom: 1vh;
+    transition: opacity 0.5s ease;
+  }
+
+  .breathing-count {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5rem);
+    color: var(--accent-gold-light);
+    line-height: 1;
+    font-weight: 300;
+  }
+
+  .breathing-controls {
+    margin-top: 3vh;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .btn-breathe {
+    padding: 1.2vh 2.5vw;
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold-light);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-breathe:hover {
+    background: rgba(212, 165, 116, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .breathing-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5vw;
+    margin-top: 4vh;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .breath-step {
+    padding: 2vh 1vw;
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    border-radius: 4px;
+    background: rgba(20, 35, 64, 0.3);
+  }
+
+  .breath-step-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    color: var(--accent-gold);
+    line-height: 1;
+    margin-bottom: 1vh;
+  }
+
+  .breath-step-label {
+    font-family: var(--sans);
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+    color: var(--text-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* === SLIDE 11: GUÍA BUSCAR APOYO === */
+  #slide-11 .container {
+    max-width: 1500px;
+    width: 100%;
+  }
+
+  .apoyo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2vw 2.5vw;
+    margin-top: 5vh;
+  }
+
+  .apoyo-card {
+    padding: 3vh 1.8vw 2.5vh;
+    border: 1px solid rgba(212, 184, 122, 0.22);
+    border-radius: 10px;
+    background: rgba(22, 58, 37, 0.35);
+    backdrop-filter: blur(8px);
+    text-align: left;
+    position: relative;
+    transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .apoyo-card:hover {
+    border-color: rgba(212, 184, 122, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .apoyo-number {
+    position: absolute;
+    top: -1.3rem;
+    left: 1.8rem;
+    width: 2.7rem;
+    height: 2.7rem;
+    background: var(--bg-1);
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-gold);
+    font-size: 1.25rem;
+  }
+
+  .apoyo-title {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 1.55vw, 1.55rem);
+    color: var(--accent-gold-light);
+    margin-bottom: 1.2vh;
+    padding-top: 1.5vh;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  .apoyo-title .italic { font-style: italic; }
+
+  .apoyo-description {
+    font-family: var(--sans);
+    font-size: clamp(0.82rem, 0.95vw, 0.95rem);
+    color: var(--text-soft);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .apoyo-description em {
+    color: var(--accent-gold-light);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* === SLIDE FINAL: CIERRE === */
+  #slide-12 {
+    text-align: center;
+  }
+
+  #slide-12 .quote-mark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(6rem, 12vw, 12rem);
+    color: var(--accent-gold);
+    opacity: 0.3;
+    line-height: 0.7;
+    margin-bottom: 2vh;
+  }
+
+  #slide-12 .closing-verse {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    color: var(--text-light);
+    max-width: 1000px;
+    line-height: 1.4;
+    margin: 0 auto 4vh;
+    font-weight: 400;
+  }
+
+  #slide-12 .verse-citation {
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+    color: var(--accent-gold);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 6vh;
+  }
+
+  #slide-12 .closing-message {
+    font-family: var(--sans);
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    color: var(--text-soft);
+    font-weight: 300;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  #slide-12 .ornament-bottom {
+    margin-top: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  #slide-12 .ornament-bottom .line {
+    width: 60px;
+    height: 1px;
+    background: var(--accent-gold);
+    opacity: 0.6;
+  }
+
+  #slide-12 .ornament-bottom .diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-gold);
+    transform: rotate(45deg);
+    opacity: 0.8;
+  }
+
+  /* === NAVEGACIÓN === */
+  .nav-controls {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 10;
+    background: rgba(10, 22, 40, 0.7);
+    backdrop-filter: blur(20px);
+    padding: 1vh 2vw;
+    border-radius: 100px;
+    border: 1px solid rgba(212, 165, 116, 0.2);
+  }
+
+  .nav-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(212, 165, 116, 0.4);
+    color: var(--accent-gold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .nav-btn:hover {
+    background: rgba(212, 165, 116, 0.15);
+    border-color: var(--accent-gold);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .slide-indicator {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    min-width: 5rem;
+    text-align: center;
+  }
+
+  .slide-indicator .current {
+    color: var(--accent-gold-light);
+    font-size: 1.2em;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: var(--accent-gold);
+    z-index: 100;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--accent-gold);
+  }
+
+  /* Menú lateral de slides */
+  .slide-menu-toggle {
+    position: fixed;
+    top: 3vh;
+    right: 3vw;
+    z-index: 20;
+    background: transparent;
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    color: var(--accent-gold);
+    padding: 0.8rem 1.2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+  }
+
+  .slide-menu-toggle:hover {
+    background: rgba(212, 165, 116, 0.1);
+  }
+
+  .slide-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 320px;
+    background: rgba(10, 22, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(212, 165, 116, 0.2);
+    z-index: 30;
+    padding: 6vh 2rem 4vh;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .slide-menu.open { transform: translateX(0); }
+
+  .slide-menu h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-gold);
+    margin-bottom: 2rem;
+    font-weight: 400;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  .slide-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+    padding: 1.2rem 0;
+    color: var(--text-soft);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .slide-menu-item:hover {
+    color: var(--accent-gold-light);
+    padding-left: 0.5rem;
+  }
+
+  .slide-menu-item.current {
+    color: var(--accent-gold);
+  }
+
+  .slide-menu-item .num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-gold);
+    min-width: 2rem;
+  }
+
+  .slide-menu-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: transparent;
+    border: none;
+    color: var(--text-soft);
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  /* Pista de teclado */
+  .keyboard-hint {
+    position: fixed;
+    bottom: 1vh;
+    right: 2vw;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    opacity: 0.5;
+    z-index: 5;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .qr-slide .container {
+      grid-template-columns: 1fr;
+      gap: 3vh;
+    }
+    .dinamica-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .auxilios-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Modo presentación oscuro impreso */
+  @media print { body { background: white !important; color: black !important; } }
+
+</style>
+</head>
+<body>
+
+<!-- Partículas y ambiente global (se activan según tema) -->
+<div class="ambient-particles" id="ambientParticles"></div>
+<div class="forest-mist"></div>
+
+<!-- Selector de tema -->
+<div class="theme-switcher" id="themeSwitcher" title="Cambiar tema visual">
+  <div class="theme-dot" data-target="noche" data-label="Cielo nocturno"></div>
+  <div class="theme-dot active" data-target="bosque" data-label="Bosque sereno"></div>
+</div>
+
+<div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+
+<div class="slides-wrapper" id="slidesWrapper">
+
+  <!-- ESPACIO 1: TÍTULO -->
+  <section class="slide active" id="slide-1" data-slide="1">
+    <div class="stars" id="starsContainer"></div>
+    <div class="slide-marker reveal reveal-1"><span>I</span> · BIENVENIDA</div>
+    <div class="ornament reveal reveal-2"></div>
+    <div class="eyebrow reveal reveal-3">
+      Iglesia de Dios<br>
+      <span class="eyebrow-sub">Departamento Juvenil Nacional</span>
+    </div>
+    <h1 class="reveal reveal-4">
+      La salud mental<br>
+      <span class="italic">en la fe</span>
+    </h1>
+    <div class="presenters reveal reveal-5">
+      <div class="presenters-ornament"></div>
+      <p class="presenters-label">Imparten</p>
+      <p class="presenters-names">
+        Hna. Andrea de Alfaro<span class="presenters-sep">·</span>Hna. Keren de Alvarenga
+      </p>
+    </div>
+  </section>
+
+  <!-- ESPACIO 2: DINÁMICA CORPORAL -->
+  <section class="slide" id="slide-2" data-slide="2">
+    <div class="slide-marker reveal reveal-1"><span>II</span> · DINÁMICA</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">Escucha <span class="italic">tu cuerpo</span></h2>
+      <p class="section-subtitle reveal reveal-3">Cada emoción tiene un gesto. Sigamos juntos las indicaciones.</p>
+
+      <div class="dinamica-grid">
+        <div class="dinamica-card reveal reveal-4">
+          <div class="dinamica-icon">🌟</div>
+          <div class="dinamica-label">Alegría</div>
+          <p class="dinamica-action">Brazos arriba, abre el pecho hacia el cielo.</p>
+        </div>
+        <div class="dinamica-card reveal reveal-4" style="animation-delay:0.55s;">
+          <div class="dinamica-icon">💗</div>
+          <div class="dinamica-label">Ansiedad</div>
+          <p class="dinamica-action">Manos en el pecho, siente tu respiración.</p>
+        </div>
+        <div class="dinamica-card reveal reveal-5">
+          <div class="dinamica-icon">🌧️</div>
+          <div class="dinamica-label">Tristeza</div>
+          <p class="dinamica-action">Cabeza baja, hombros sueltos, permítelo.</p>
+        </div>
+        <div class="dinamica-card reveal reveal-5" style="animation-delay:0.85s;">
+          <div class="dinamica-icon">🛡️</div>
+          <div class="dinamica-label">Confianza</div>
+          <p class="dinamica-action">Brazos cruzados con firmeza sobre el pecho.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 3: VIDEO DE ELÍAS -->
+  <section class="slide" id="slide-3" data-slide="3">
+    <div class="slide-marker reveal reveal-1"><span>III</span> · TESTIMONIO BÍBLICO</div>
+    <div class="video-container">
+      <p class="video-intro reveal reveal-2">— Un profeta agotado bajo el enebro —</p>
+      <h2 class="video-title reveal reveal-3">La historia de <span class="italic">Elías</span></h2>
+      <div class="video-frame reveal reveal-4">
+        <video id="eliasVideo" controls preload="metadata">
+          <source src="assets/elias.mp4" type="video/mp4">
+          Tu navegador no soporta video HTML5.
+        </video>
+      </div>
+      <p class="video-caption reveal reveal-5">
+        «Quítame la vida, oh Jehová, basta ya…»<br>
+        — 1 Reyes 19:4
+      </p>
+    </div>
+  </section>
+
+  <!-- ESPACIO 4: EJERCICIO DIRIGIDO (QR INTERACTIVO) -->
+  <section class="slide qr-slide" id="slide-4" data-slide="4">
+    <div class="slide-marker reveal reveal-1"><span>IV</span> · EJERCICIO DIRIGIDO</div>
+    <div class="container">
+      <div class="qr-text-side reveal reveal-2">
+        <h2 class="title">Ahora realizaremos<br><span class="italic">un ejercicio</span></h2>
+        <p class="description">
+          Vamos a presentar <em>4 casos</em> y trataremos de identificar,
+          en cada uno, qué está experimentando la persona.
+        </p>
+        <ol class="qr-steps">
+          <li>Toma tu celular y abre la cámara.</li>
+          <li>Escanea el código QR de la derecha.</li>
+          <li>Responde cada ejemplo con calma.</li>
+          <li>Tus respuestas aparecerán en tiempo real.</li>
+        </ol>
+      </div>
+      <div class="qr-visual-side reveal reveal-3">
+        <div class="qr-card">
+          <div class="qr-card-header">— ESCANEA PARA PARTICIPAR —</div>
+          <div class="qr-canvas-container" id="qr-ejercicio-container">
+            <div class="qr-placeholder">Generando código QR…</div>
+          </div>
+          <div class="qr-url" id="qr-ejercicio-url" contenteditable="true" spellcheck="false"></div>
+          <div class="qr-regen-hint">Toca la URL para editarla · Enter regenera el QR</div>
+        </div>
+        <div class="qr-counter">
+          <div class="dot"></div>
+          <span><span id="counter-ejercicio">0</span> respuestas en vivo</span>
+        </div>
+        <a href="dashboard.html" target="_blank" class="dashboard-link" rel="noopener">
+          Abrir panel de respuestas
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 5: ANSIEDAD - IMAGEN 5 -->
+  <section class="slide image-slide" id="slide-5" data-slide="5">
+    <div class="slide-marker reveal reveal-1"><span>V</span> · ANSIEDAD</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">¿Qué es la <span class="italic">ansiedad</span>?</h2>
+      <p class="section-subtitle reveal reveal-3">Síntomas físicos, cognitivos y de conducta.</p>
+      <div class="image-frame reveal reveal-4">
+        <img src="assets/image5.png" alt="Qué es la ansiedad — síntomas físicos y cognitivos" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 6: IMAGEN 2 -->
+  <section class="slide image-slide" id="slide-6" data-slide="6">
+    <div class="slide-marker reveal reveal-1"><span>VI</span> · ANSIEDAD</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">¿Qué <span class="italic">no</span> es ansiedad?</h2>
+      <p class="section-subtitle reveal reveal-3">Distinguir emociones temporales de un trastorno.</p>
+      <div class="image-frame reveal reveal-4">
+        <img src="assets/image2.png" alt="Emociones y estados transitorios" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 7: DEPRESIÓN - QR PARA PALABRAS -->
+  <section class="slide qr-slide" id="slide-7" data-slide="7">
+    <div class="slide-marker reveal reveal-1"><span>VII</span> · DEPRESIÓN</div>
+    <div class="container">
+      <div class="qr-text-side reveal reveal-2">
+        <h2 class="title">Construyamos<br><span class="italic">conceptos</span></h2>
+        <p class="description">
+          Cuando piensas en la palabra <em>depresión</em>, ¿qué imágenes, sensaciones
+          o palabras vienen a tu mente? Compártelas con nosotros.
+        </p>
+        <ol class="qr-steps">
+          <li>Escanea el código QR con tu cámara.</li>
+          <li>Escribe libremente las palabras que asocies.</li>
+          <li>Puedes enviar tantas como quieras.</li>
+          <li>Veremos juntos la nube formarse en vivo.</li>
+        </ol>
+      </div>
+      <div class="qr-visual-side reveal reveal-3">
+        <div class="qr-card">
+          <div class="qr-card-header">— ESCANEA Y COMPARTE —</div>
+          <div class="qr-canvas-container" id="qr-palabras-container">
+            <div class="qr-placeholder">Generando código QR…</div>
+          </div>
+          <div class="qr-url" id="qr-palabras-url" contenteditable="true" spellcheck="false"></div>
+          <div class="qr-regen-hint">Toca la URL para editarla · Enter regenera el QR</div>
+        </div>
+        <div class="qr-counter">
+          <div class="dot"></div>
+          <span><span id="counter-palabras">0</span> palabras compartidas</span>
+        </div>
+        <a href="dashboard.html" target="_blank" class="dashboard-link" rel="noopener">
+          Abrir panel de respuestas
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 8: IMAGEN 3 - DEPRESIÓN -->
+  <section class="slide image-slide" id="slide-8" data-slide="8">
+    <div class="slide-marker reveal reveal-1"><span>VIII</span> · DEPRESIÓN</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">¿Qué es la <span class="italic">depresión</span>?</h2>
+      <p class="section-subtitle reveal reveal-3">Síntomas, consuelo y esperanza.</p>
+      <div class="image-frame reveal reveal-4">
+        <img src="assets/image3.png" alt="Qué es la depresión - síntomas" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 9: PRIMEROS AUXILIOS PSICOLÓGICOS -->
+  <section class="slide" id="slide-9" data-slide="9">
+    <div class="slide-marker reveal reveal-1"><span>IX</span> · PRIMEROS AUXILIOS</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">Primeros <span class="italic">auxilios</span> psicológicos</h2>
+      <p class="section-subtitle reveal reveal-3">Respira · Detente · Transforma</p>
+
+      <div class="auxilios-grid">
+        <div class="auxilio-card reveal reveal-4">
+          <div class="auxilio-number">i</div>
+          <h3 class="auxilio-title"><span class="italic">Respira</span> profundo</h3>
+          <ul class="auxilio-list">
+            <li>Inhala lento y siente el aire llenar tu cuerpo.</li>
+            <li>Mantén el aire unos segundos, siente la calma.</li>
+            <li>Exhala despacio, liberando tensión y pensamientos.</li>
+            <li>Repite el ciclo cuatro veces.</li>
+          </ul>
+        </div>
+        <div class="auxilio-card reveal reveal-4" style="animation-delay:0.55s;">
+          <div class="auxilio-number">ii</div>
+          <h3 class="auxilio-title"><span class="italic">Detén</span> el pensamiento</h3>
+          <ul class="auxilio-list">
+            <li>Cuando notes una idea que te lastima, di «¡alto!» en tu mente.</li>
+            <li>Sustitúyela por una imagen o recuerdo positivo.</li>
+            <li>Detener no es ignorar — es transformar.</li>
+            <li>Cada vez se vuelve más natural.</li>
+          </ul>
+        </div>
+        <div class="auxilio-card reveal reveal-5">
+          <div class="auxilio-number">iii</div>
+          <h3 class="auxilio-title"><span class="italic">Reenfoca</span> tu mente</h3>
+          <ul class="auxilio-list">
+            <li>Cuestiona el pensamiento: «¿es realmente cierto?»</li>
+            <li>Busca una perspectiva realista y compasiva.</li>
+            <li>Habla con alguien de confianza.</li>
+            <li>Escuchar con atención es el mejor primer auxilio.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 10: RESPIRACIÓN 4-7-8 -->
+  <section class="slide" id="slide-10" data-slide="10">
+    <div class="slide-marker reveal reveal-1"><span>X</span> · RESPIRACIÓN GUIADA</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">Respiración <span class="italic">4 — 7 — 8</span></h2>
+      <p class="section-subtitle reveal reveal-3">Inhala cuatro. Retén siete. Exhala ocho.</p>
+
+      <div class="breathing-orb-container reveal reveal-4">
+        <div class="breathing-orb" id="orb-outer"></div>
+        <div class="breathing-orb inner" id="orb-inner"></div>
+        <div class="breathing-orb core" id="orb-core"></div>
+        <div class="breathing-text">
+          <div class="breathing-phase" id="breathPhase">Listos</div>
+          <div class="breathing-count" id="breathCount">—</div>
+        </div>
+      </div>
+
+      <div class="breathing-controls reveal reveal-5">
+        <button class="btn-breathe" id="startBreath">Comenzar ciclo guiado</button>
+        <button class="btn-breathe" id="stopBreath" style="display:none;">Detener</button>
+      </div>
+
+      <div class="breathing-steps reveal reveal-6">
+        <div class="breath-step">
+          <div class="breath-step-num">4</div>
+          <div class="breath-step-label">Inhala · Nariz</div>
+        </div>
+        <div class="breath-step">
+          <div class="breath-step-num">7</div>
+          <div class="breath-step-label">Retén · Suave</div>
+        </div>
+        <div class="breath-step">
+          <div class="breath-step-num">8</div>
+          <div class="breath-step-label">Exhala · Boca</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 11: GUÍA PARA BUSCAR APOYO PSICOLÓGICO -->
+  <section class="slide" id="slide-11" data-slide="11">
+    <div class="slide-marker reveal reveal-1"><span>XI</span> · BUSCAR APOYO</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">Guía para <span class="italic">buscar apoyo</span> psicológico</h2>
+      <p class="section-subtitle reveal reveal-3">Seis pasos para acompañarte en este caminar.</p>
+
+      <div class="apoyo-grid">
+        <div class="apoyo-card reveal reveal-4">
+          <div class="apoyo-number">i</div>
+          <h3 class="apoyo-title">Identifica <span class="italic">la necesidad</span></h3>
+          <p class="apoyo-description">
+            Reconoce tus sentimientos. <em>Ansiedad, tristeza, cambios en el sueño o apetito</em> son señales para escuchar con honestidad lo que tu cuerpo y mente expresan.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.55s;">
+          <div class="apoyo-number">ii</div>
+          <h3 class="apoyo-title">Busca <span class="italic">información</span> y opciones</h3>
+          <p class="apoyo-description">
+            Explora terapeutas y clínicas disponibles, tanto <em>públicas como privadas</em>. La terapia en línea también es una alternativa válida y accesible.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.7s;">
+          <div class="apoyo-number">iii</div>
+          <h3 class="apoyo-title">Pide <span class="italic">referencias</span> o recomendaciones</h3>
+          <p class="apoyo-description">
+            Habla con <em>amigos, familia o médicos de confianza</em>. Busca testimonios y reseñas. Las experiencias compartidas son una guía valiosa.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5">
+          <div class="apoyo-number">iv</div>
+          <h3 class="apoyo-title">Verifica <span class="italic">credenciales</span> y especialidad</h3>
+          <p class="apoyo-description">
+            Asegúrate de que el profesional tenga <em>licencia y formación adecuada</em> para acompañar tu necesidad específica.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5" style="animation-delay:0.85s;">
+          <div class="apoyo-number">v</div>
+          <h3 class="apoyo-title">Contacta y <span class="italic">agenda</span> una cita</h3>
+          <p class="apoyo-description">
+            Comunícate por teléfono o correo. Consulta <em>tarifas, horarios y modalidad</em>. Dar este paso es ya un acto de cuidado propio.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5" style="animation-delay:1s;">
+          <div class="apoyo-number">vi</div>
+          <h3 class="apoyo-title">Asiste y <span class="italic">evalúa</span> la primera sesión</h3>
+          <p class="apoyo-description">
+            Conoce al terapeuta. Valora si te sientes <em>cómodo, seguro y escuchado</em>. Recuerda: encontrar el acompañamiento correcto es un proceso de adaptación.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 12: CIERRE -->
+  <section class="slide" id="slide-12" data-slide="12">
+    <div class="slide-marker reveal reveal-1"><span>XII</span> · CIERRE</div>
+    <div class="quote-mark reveal reveal-2">"</div>
+    <p class="closing-verse reveal reveal-3">
+      Cerca está Jehová de los quebrantados de corazón;<br>
+      y salva a los contritos de espíritu.
+    </p>
+    <p class="verse-citation reveal reveal-4">— Salmo 34:18</p>
+    <p class="closing-message reveal reveal-5">
+      No estás solo. Buscar ayuda es un acto de valentía y de fe.<br>
+      Que la paz de Dios, que sobrepasa todo entendimiento, guarde<br>
+      vuestros corazones y vuestros pensamientos.
+    </p>
+    <div class="ornament-bottom reveal reveal-6">
+      <div class="line"></div>
+      <div class="diamond"></div>
+      <div class="line"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Navegación inferior -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" aria-label="Anterior">‹</button>
+  <div class="slide-indicator"><span class="current" id="currentSlide">I</span> <span style="opacity:0.4">de</span> <span id="totalSlides">XI</span></div>
+  <button class="nav-btn" id="nextBtn" aria-label="Siguiente">›</button>
+</div>
+
+<!-- Menú de slides -->
+<button class="slide-menu-toggle" id="menuToggle">Índice</button>
+
+<div class="slide-menu" id="slideMenu">
+  <button class="slide-menu-close" id="menuClose">×</button>
+  <h3>Recorrido</h3>
+  <button class="slide-menu-item" data-target="1"><span class="num">I</span>Bienvenida</button>
+  <button class="slide-menu-item" data-target="2"><span class="num">II</span>Dinámica corporal</button>
+  <button class="slide-menu-item" data-target="3"><span class="num">III</span>La historia de Elías</button>
+  <button class="slide-menu-item" data-target="4"><span class="num">IV</span>Ejercicio dirigido</button>
+  <button class="slide-menu-item" data-target="5"><span class="num">V</span>Ansiedad — qué es</button>
+  <button class="slide-menu-item" data-target="6"><span class="num">VI</span>Ansiedad — qué no es</button>
+  <button class="slide-menu-item" data-target="7"><span class="num">VII</span>Depresión — palabras</button>
+  <button class="slide-menu-item" data-target="8"><span class="num">VIII</span>Depresión — qué es</button>
+  <button class="slide-menu-item" data-target="9"><span class="num">IX</span>Primeros auxilios</button>
+  <button class="slide-menu-item" data-target="10"><span class="num">X</span>Respiración 4-7-8</button>
+  <button class="slide-menu-item" data-target="11"><span class="num">XI</span>Cómo buscar apoyo</button>
+  <button class="slide-menu-item" data-target="12"><span class="num">XII</span>Cierre</button>
+</div>
+
+<div class="keyboard-hint">← → flechas · ESC menú</div>
+
+<script>
+  // ============================================
+  //   ESTADO PRINCIPAL
+  // ============================================
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const romanNumerals = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  let currentIndex = 0;
+
+  const progressBar = document.getElementById('progressBar');
+  const currentSlideEl = document.getElementById('currentSlide');
+  const totalSlidesEl = document.getElementById('totalSlides');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  totalSlidesEl.textContent = romanNumerals[totalSlides];
+
+  function goToSlide(index) {
+    if (index < 0 || index >= totalSlides) return;
+    slides[currentIndex].classList.remove('active');
+    slides[index].classList.add('active');
+    currentIndex = index;
+    currentSlideEl.textContent = romanNumerals[index + 1];
+    progressBar.style.width = ((index + 1) / totalSlides * 100) + '%';
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === totalSlides - 1;
+
+    // Actualizar menú
+    document.querySelectorAll('.slide-menu-item').forEach((item, i) => {
+      item.classList.toggle('current', i === index);
+    });
+
+    // Pausar video si nos vamos del slide del video
+    if (index !== 2) {
+      const vid = document.getElementById('eliasVideo');
+      if (vid && !vid.paused) vid.pause();
+    }
+
+    // Detener respiración si nos vamos del slide
+    if (index !== 9) stopBreathing();
+  }
+
+  prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToSlide(currentIndex + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToSlide(currentIndex - 1);
+    } else if (e.key === 'Home') {
+      goToSlide(0);
+    } else if (e.key === 'End') {
+      goToSlide(totalSlides - 1);
+    } else if (e.key === 'Escape') {
+      document.getElementById('slideMenu').classList.toggle('open');
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  // Inicializar
+  progressBar.style.width = (1 / totalSlides * 100) + '%';
+  prevBtn.disabled = true;
+  document.querySelectorAll('.slide-menu-item')[0].classList.add('current');
+
+  // ============================================
+  //   MENÚ
+  // ============================================
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('slideMenu').classList.toggle('open');
+  });
+  document.getElementById('menuClose').addEventListener('click', () => {
+    document.getElementById('slideMenu').classList.remove('open');
+  });
+  document.querySelectorAll('.slide-menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const target = parseInt(item.dataset.target) - 1;
+      goToSlide(target);
+      document.getElementById('slideMenu').classList.remove('open');
+    });
+  });
+
+  // ============================================
+  //   SISTEMA DE TEMAS (selector en vivo)
+  // ============================================
+  const TEMA_STORAGE_KEY = 'salud-mental-fe-tema';
+  const temas = ['noche', 'bosque'];
+
+  // Partículas de polen (declaradas antes para uso desde aplicarTema)
+  const ambientContainer = document.getElementById('ambientParticles');
+  const POLEN_COUNT = 35;
+  let polenActivo = false;
+
+  function generarPolen() {
+    if (polenActivo) return;
+    polenActivo = true;
+    ambientContainer.innerHTML = '';
+    for (let i = 0; i < POLEN_COUNT; i++) {
+      const p = document.createElement('div');
+      p.className = 'pollen';
+      const size = 2 + Math.random() * 4; // 2px a 6px
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      const fallDuration = 14 + Math.random() * 18;
+      const driftDuration = 4 + Math.random() * 4;
+      const delay = -Math.random() * fallDuration;
+      p.style.animation =
+        `pollen-fall ${fallDuration}s linear ${delay}s infinite, ` +
+        `pollen-drift ${driftDuration}s ease-in-out ${delay}s infinite`;
+      ambientContainer.appendChild(p);
+    }
+  }
+
+  function limpiarPolen() {
+    polenActivo = false;
+    setTimeout(() => {
+      if (!polenActivo) ambientContainer.innerHTML = '';
+    }, 1600);
+  }
+
+  function aplicarTema(tema) {
+    if (!temas.includes(tema)) tema = 'noche';
+    document.documentElement.setAttribute('data-theme', tema);
+    document.querySelectorAll('.theme-dot').forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.target === tema);
+    });
+    try { localStorage.setItem(TEMA_STORAGE_KEY, tema); } catch (e) {}
+    if (tema === 'bosque') {
+      generarPolen();
+    } else {
+      limpiarPolen();
+    }
+  }
+
+  // Cargar tema guardado o usar el actual del HTML
+  const temaGuardado = (function () {
+    try { return localStorage.getItem(TEMA_STORAGE_KEY); } catch (e) { return null; }
+  })();
+  const temaInicial = temaGuardado || document.documentElement.getAttribute('data-theme') || 'bosque';
+  aplicarTema(temaInicial);
+
+  document.querySelectorAll('.theme-dot').forEach(dot => {
+    dot.addEventListener('click', () => aplicarTema(dot.dataset.target));
+  });
+
+  // Atajo de teclado T para alternar
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const target = e.target;
+      if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+      const actual = document.documentElement.getAttribute('data-theme') || 'noche';
+      aplicarTema(actual === 'noche' ? 'bosque' : 'noche');
+    }
+  });
+
+  // ============================================
+  //   ESTRELLAS DECORATIVAS EN SLIDE 1
+  // ============================================
+  const starsContainer = document.getElementById('starsContainer');
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 4 + 's';
+    star.style.animationDuration = (3 + Math.random() * 3) + 's';
+    if (Math.random() > 0.7) {
+      star.style.width = '3px';
+      star.style.height = '3px';
+    }
+    starsContainer.appendChild(star);
+  }
+
+  // ============================================
+  //   GENERACIÓN DE CÓDIGOS QR (robusta + editable)
+  // ============================================
+  function obtenerBaseUrl() {
+    let origin = window.location.origin;
+    let path = window.location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+    // Si se abre con file://, recomendamos una URL placeholder editable
+    if (origin === 'null' || origin.startsWith('file://')) {
+      return 'https://tu-dominio.vercel.app';
+    }
+    return origin + path;
+  }
+
+  function renderizarQR(containerId, urlTexto) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (typeof qrcode !== 'undefined') {
+      try {
+        const qr = qrcode(0, 'M');
+        qr.addData(urlTexto);
+        qr.make();
+        const img = document.createElement('img');
+        img.src = qr.createDataURL(8, 8);
+        img.alt = 'Código QR';
+        container.appendChild(img);
+        return;
+      } catch (e) {
+        console.error('QR error:', e);
+      }
+    }
+
+    const div = document.createElement('div');
+    div.className = 'qr-placeholder';
+    div.innerHTML = 'No se pudo generar el QR.<br>Comparte la URL manualmente.';
+    container.appendChild(div);
+  }
+
+  function renderizarQRFallback(container, urlTexto) {
+    renderizarQR(container.id, urlTexto);
+  }
+
+  function configurarQRSlot(containerId, urlElementId, actividad) {
+    const urlElement = document.getElementById(urlElementId);
+    const initialUrl = obtenerBaseUrl() + '/joven.html?actividad=' + actividad;
+    urlElement.textContent = initialUrl;
+    renderizarQR(containerId, initialUrl);
+
+    // Regenera al presionar Enter o al perder foco con cambios
+    urlElement.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        urlElement.blur();
+      }
+    });
+    urlElement.addEventListener('blur', function () {
+      const nuevaUrl = urlElement.textContent.trim();
+      if (nuevaUrl && nuevaUrl.length > 5) {
+        renderizarQR(containerId, nuevaUrl);
+      }
+    });
+  }
+
+  // Pequeña espera para asegurar carga de scripts CDN
+  function inicializarQRs() {
+    configurarQRSlot('qr-ejercicio-container', 'qr-ejercicio-url', 'ejercicio');
+    configurarQRSlot('qr-palabras-container', 'qr-palabras-url', 'palabras');
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(inicializarQRs, 100);
+  } else {
+    window.addEventListener('load', function () {
+      setTimeout(inicializarQRs, 100);
+    });
+  }
+
+  // ============================================
+  //   RESPIRACIÓN 4-7-8 GUIADA
+  // ============================================
+  let breathTimeout = null;
+  const phases = [
+    { name: 'Inhala', count: 4, scale: 'scale(1.25)', transition: '4s ease-in' },
+    { name: 'Retén', count: 7, scale: 'scale(1.25)', transition: '7s linear' },
+    { name: 'Exhala', count: 8, scale: 'scale(0.85)', transition: '8s ease-out' }
+  ];
+
+  const orbOuter = document.getElementById('orb-outer');
+  const orbInner = document.getElementById('orb-inner');
+  const orbCore = document.getElementById('orb-core');
+  const breathPhase = document.getElementById('breathPhase');
+  const breathCount = document.getElementById('breathCount');
+  const startBreath = document.getElementById('startBreath');
+  const stopBreath = document.getElementById('stopBreath');
+
+  let currentCycle = 0;
+  const totalCycles = 4;
+
+  function runPhase(phaseIdx) {
+    if (phaseIdx >= phases.length) {
+      currentCycle++;
+      if (currentCycle >= totalCycles) {
+        stopBreathing();
+        breathPhase.textContent = '✓ Completo';
+        breathCount.textContent = '—';
+        return;
+      }
+      phaseIdx = 0;
+    }
+
+    const phase = phases[phaseIdx];
+    breathPhase.textContent = phase.name;
+
+    // Animar transformación
+    [orbOuter, orbInner, orbCore].forEach(orb => {
+      orb.style.transition = 'transform ' + phase.transition;
+      orb.style.transform = phase.scale;
+    });
+
+    // Contador regresivo
+    let count = phase.count;
+    breathCount.textContent = count;
+    const countdownInterval = setInterval(() => {
+      count--;
+      if (count <= 0) {
+        clearInterval(countdownInterval);
+      } else {
+        breathCount.textContent = count;
+      }
+    }, 1000);
+
+    breathTimeout = setTimeout(() => {
+      runPhase(phaseIdx + 1);
+    }, phase.count * 1000);
+  }
+
+  function startBreathing() {
+    currentCycle = 0;
+    startBreath.style.display = 'none';
+    stopBreath.style.display = 'inline-block';
+    runPhase(0);
+  }
+
+  function stopBreathing() {
+    if (breathTimeout) { clearTimeout(breathTimeout); breathTimeout = null; }
+    startBreath.style.display = 'inline-block';
+    stopBreath.style.display = 'none';
+    [orbOuter, orbInner, orbCore].forEach(orb => {
+      orb.style.transition = 'transform 0.8s ease';
+      orb.style.transform = 'scale(1)';
+    });
+    breathPhase.textContent = 'Listos';
+    breathCount.textContent = '—';
+  }
+
+  startBreath.addEventListener('click', startBreathing);
+  stopBreath.addEventListener('click', stopBreathing);
+
+  // ============================================
+  //   CONTADORES EN VIVO (FIREBASE)
+  // ============================================
+  // Esperar a que firebase módulo se cargue
+  function waitForFirebase(callback) {
+    if (window.__firebase) callback();
+    else setTimeout(() => waitForFirebase(callback), 100);
+  }
+
+  waitForFirebase(() => {
+    try {
+      const { initializeApp, getDatabase, ref, onValue, firebaseConfig } = window.__firebase;
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      // Contador ejercicio
+      const ejercicioRef = ref(db, 'ejercicio/respuestas');
+      onValue(ejercicioRef, (snapshot) => {
+        const data = snapshot.val();
+        document.getElementById('counter-ejercicio').textContent = data ? Object.keys(data).length : 0;
+      }, () => {
+        document.getElementById('counter-ejercicio').textContent = '—';
+      });
+
+      // Contador palabras
+      const palabrasRef = ref(db, 'palabras/lista');
+      onValue(palabrasRef, (snapshot) => {
+        const data = snapshot.val();
+        document.getElementById('counter-palabras').textContent = data ? Object.keys(data).length : 0;
+      }, () => {
+        document.getElementById('counter-palabras').textContent = '—';
+      });
+    } catch (e) {
+      console.log('Firebase no disponible (modo demo):', e.message);
+      // Modo demo: usar localStorage
+      setInterval(() => {
+        try {
+          const eje = JSON.parse(localStorage.getItem('ejercicio_respuestas') || '[]');
+          document.getElementById('counter-ejercicio').textContent = eje.length;
+          const pal = JSON.parse(localStorage.getItem('palabras_lista') || '[]');
+          document.getElementById('counter-palabras').textContent = pal.length;
+        } catch(e) {}
+      }, 1500);
+    }
+  });
+
+</script>
+
+</body>
+</html>
