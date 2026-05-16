@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="bosque">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -372,11 +372,22 @@
     letter-spacing: 0.2em;
     margin-bottom: 2vh;
     text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  #slide-1 .eyebrow-sub {
+    display: inline-block;
+    margin-top: 0.4em;
+    font-size: 0.78em;
+    color: var(--text-soft);
+    letter-spacing: 0.18em;
+    font-style: normal;
+    font-weight: 300;
   }
 
   #slide-1 h1 {
     font-family: var(--serif);
-    font-size: clamp(3.5rem, 9vw, 9rem);
+    font-size: clamp(3rem, 7.5vw, 7.5rem);
     font-weight: 400;
     line-height: 0.95;
     color: var(--text-light);
@@ -390,34 +401,45 @@
     color: var(--accent-gold-light);
   }
 
-  #slide-1 .subtitle {
-    font-family: var(--sans);
-    font-size: clamp(1rem, 1.4vw, 1.4rem);
-    font-weight: 300;
-    color: var(--text-soft);
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.7;
-    letter-spacing: 0.05em;
+  #slide-1 .presenters {
+    margin-top: 2vh;
+    max-width: 600px;
   }
 
-  #slide-1 .verse {
-    margin-top: 5vh;
+  #slide-1 .presenters-ornament {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
+    margin: 0 auto 1.5vh;
+    opacity: 0.7;
+  }
+
+  #slide-1 .presenters-label {
     font-family: var(--serif);
     font-style: italic;
-    font-size: clamp(0.95rem, 1.3vw, 1.25rem);
+    font-size: clamp(0.8rem, 1vw, 1rem);
     color: var(--text-dim);
-    max-width: 600px;
-    line-height: 1.8;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1.2vh;
   }
 
-  #slide-1 .verse-ref {
-    display: block;
-    margin-top: 0.5em;
-    font-style: normal;
-    font-size: 0.85em;
+  #slide-1 .presenters-names {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 1.8vw, 1.65rem);
+    font-weight: 400;
+    color: var(--text-light);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  #slide-1 .presenters-sep {
     color: var(--accent-gold);
-    letter-spacing: 0.2em;
+    opacity: 0.7;
+    font-size: 1em;
+    display: inline-block;
+    margin: 0 0.5em;
+    vertical-align: middle;
   }
 
   /* Estrellas/luz decorativa para slide 1 */
@@ -1000,12 +1022,86 @@
     font-weight: 400;
   }
 
+  /* === SLIDE 11: GUÍA BUSCAR APOYO === */
+  #slide-11 .container {
+    max-width: 1500px;
+    width: 100%;
+  }
+
+  .apoyo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2vw 2.5vw;
+    margin-top: 5vh;
+  }
+
+  .apoyo-card {
+    padding: 3vh 1.8vw 2.5vh;
+    border: 1px solid rgba(212, 184, 122, 0.22);
+    border-radius: 10px;
+    background: rgba(22, 58, 37, 0.35);
+    backdrop-filter: blur(8px);
+    text-align: left;
+    position: relative;
+    transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .apoyo-card:hover {
+    border-color: rgba(212, 184, 122, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .apoyo-number {
+    position: absolute;
+    top: -1.3rem;
+    left: 1.8rem;
+    width: 2.7rem;
+    height: 2.7rem;
+    background: var(--bg-1);
+    border: 1px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent-gold);
+    font-size: 1.25rem;
+  }
+
+  .apoyo-title {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 1.55vw, 1.55rem);
+    color: var(--accent-gold-light);
+    margin-bottom: 1.2vh;
+    padding-top: 1.5vh;
+    line-height: 1.25;
+    font-weight: 500;
+  }
+
+  .apoyo-title .italic { font-style: italic; }
+
+  .apoyo-description {
+    font-family: var(--sans);
+    font-size: clamp(0.82rem, 0.95vw, 0.95rem);
+    color: var(--text-soft);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .apoyo-description em {
+    color: var(--accent-gold-light);
+    font-style: italic;
+    font-weight: 400;
+  }
+
   /* === SLIDE FINAL: CIERRE === */
-  #slide-11 {
+  #slide-12 {
     text-align: center;
   }
 
-  #slide-11 .quote-mark {
+  #slide-12 .quote-mark {
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(6rem, 12vw, 12rem);
@@ -1015,7 +1111,7 @@
     margin-bottom: 2vh;
   }
 
-  #slide-11 .closing-verse {
+  #slide-12 .closing-verse {
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(1.8rem, 3.5vw, 3rem);
@@ -1026,7 +1122,7 @@
     font-weight: 400;
   }
 
-  #slide-11 .verse-citation {
+  #slide-12 .verse-citation {
     font-family: var(--serif);
     font-size: clamp(1.1rem, 1.5vw, 1.5rem);
     color: var(--accent-gold);
@@ -1035,7 +1131,7 @@
     margin-bottom: 6vh;
   }
 
-  #slide-11 .closing-message {
+  #slide-12 .closing-message {
     font-family: var(--sans);
     font-size: clamp(1rem, 1.3vw, 1.2rem);
     color: var(--text-soft);
@@ -1046,7 +1142,7 @@
     letter-spacing: 0.05em;
   }
 
-  #slide-11 .ornament-bottom {
+  #slide-12 .ornament-bottom {
     margin-top: 5vh;
     display: flex;
     align-items: center;
@@ -1054,14 +1150,14 @@
     gap: 1rem;
   }
 
-  #slide-11 .ornament-bottom .line {
+  #slide-12 .ornament-bottom .line {
     width: 60px;
     height: 1px;
     background: var(--accent-gold);
     opacity: 0.6;
   }
 
-  #slide-11 .ornament-bottom .diamond {
+  #slide-12 .ornament-bottom .diamond {
     width: 8px;
     height: 8px;
     background: var(--accent-gold);
@@ -1275,8 +1371,8 @@
 
 <!-- Selector de tema -->
 <div class="theme-switcher" id="themeSwitcher" title="Cambiar tema visual">
-  <div class="theme-dot active" data-target="noche" data-label="Cielo nocturno"></div>
-  <div class="theme-dot" data-target="bosque" data-label="Bosque sereno"></div>
+  <div class="theme-dot" data-target="noche" data-label="Cielo nocturno"></div>
+  <div class="theme-dot active" data-target="bosque" data-label="Bosque sereno"></div>
 </div>
 
 <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
@@ -1288,19 +1384,20 @@
     <div class="stars" id="starsContainer"></div>
     <div class="slide-marker reveal reveal-1"><span>I</span> · BIENVENIDA</div>
     <div class="ornament reveal reveal-2"></div>
-    <div class="eyebrow reveal reveal-3">Iglesia de Dios — Jóvenes</div>
+    <div class="eyebrow reveal reveal-3">
+      Iglesia de Dios<br>
+      <span class="eyebrow-sub">Departamento Juvenil Nacional</span>
+    </div>
     <h1 class="reveal reveal-4">
       La salud mental<br>
       <span class="italic">en la fe</span>
     </h1>
-    <p class="subtitle reveal reveal-5">
-      Un espacio para sanar la mente, fortalecer el espíritu<br>
-      y encontrar reposo en Aquel que nos sostiene.
-    </p>
-    <div class="verse reveal reveal-6">
-      «Venid a mí todos los que estáis trabajados y cargados,<br>
-      y yo os haré descansar».
-      <span class="verse-ref">— Mateo 11:28</span>
+    <div class="presenters reveal reveal-5">
+      <div class="presenters-ornament"></div>
+      <p class="presenters-label">Imparten</p>
+      <p class="presenters-names">
+        Hna. Andrea de Alfaro<span class="presenters-sep">·</span>Hna. Keren de Alvarenga
+      </p>
     </div>
   </section>
 
@@ -1360,10 +1457,10 @@
     <div class="slide-marker reveal reveal-1"><span>IV</span> · EJERCICIO DIRIGIDO</div>
     <div class="container">
       <div class="qr-text-side reveal reveal-2">
-        <h2 class="title">Identifica<br><span class="italic">cada emoción</span></h2>
+        <h2 class="title">Ahora realizaremos<br><span class="italic">un ejercicio</span></h2>
         <p class="description">
-          Vamos a observar cuatro escenas. En cada una, deberás discernir
-          si se trata de <em>tristeza</em>, <em>depresión</em> o <em>ansiedad</em>.
+          Vamos a presentar <em>4 casos</em> y trataremos de identificar,
+          en cada uno, qué está experimentando la persona.
         </p>
         <ol class="qr-steps">
           <li>Toma tu celular y abre la cámara.</li>
@@ -1418,7 +1515,7 @@
     <div class="slide-marker reveal reveal-1"><span>VII</span> · DEPRESIÓN</div>
     <div class="container">
       <div class="qr-text-side reveal reveal-2">
-        <h2 class="title">¿Qué evoca<br><span class="italic">la depresión?</span></h2>
+        <h2 class="title">Construyamos<br><span class="italic">conceptos</span></h2>
         <p class="description">
           Cuando piensas en la palabra <em>depresión</em>, ¿qué imágenes, sensaciones
           o palabras vienen a tu mente? Compártelas con nosotros.
@@ -1540,9 +1637,68 @@
     </div>
   </section>
 
-  <!-- ESPACIO 11: CIERRE -->
+  <!-- ESPACIO 11: GUÍA PARA BUSCAR APOYO PSICOLÓGICO -->
   <section class="slide" id="slide-11" data-slide="11">
-    <div class="slide-marker reveal reveal-1"><span>XI</span> · CIERRE</div>
+    <div class="slide-marker reveal reveal-1"><span>XI</span> · BUSCAR APOYO</div>
+    <div class="container">
+      <h2 class="section-title reveal reveal-2">Guía para <span class="italic">buscar apoyo</span> psicológico</h2>
+      <p class="section-subtitle reveal reveal-3">Seis pasos para acompañarte en este caminar.</p>
+
+      <div class="apoyo-grid">
+        <div class="apoyo-card reveal reveal-4">
+          <div class="apoyo-number">i</div>
+          <h3 class="apoyo-title">Identifica <span class="italic">la necesidad</span></h3>
+          <p class="apoyo-description">
+            Reconoce tus sentimientos. <em>Ansiedad, tristeza, cambios en el sueño o apetito</em> son señales para escuchar con honestidad lo que tu cuerpo y mente expresan.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.55s;">
+          <div class="apoyo-number">ii</div>
+          <h3 class="apoyo-title">Busca <span class="italic">información</span> y opciones</h3>
+          <p class="apoyo-description">
+            Explora terapeutas y clínicas disponibles, tanto <em>públicas como privadas</em>. La terapia en línea también es una alternativa válida y accesible.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.7s;">
+          <div class="apoyo-number">iii</div>
+          <h3 class="apoyo-title">Pide <span class="italic">referencias</span> o recomendaciones</h3>
+          <p class="apoyo-description">
+            Habla con <em>amigos, familia o médicos de confianza</em>. Busca testimonios y reseñas. Las experiencias compartidas son una guía valiosa.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5">
+          <div class="apoyo-number">iv</div>
+          <h3 class="apoyo-title">Verifica <span class="italic">credenciales</span> y especialidad</h3>
+          <p class="apoyo-description">
+            Asegúrate de que el profesional tenga <em>licencia y formación adecuada</em> para acompañar tu necesidad específica.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5" style="animation-delay:0.85s;">
+          <div class="apoyo-number">v</div>
+          <h3 class="apoyo-title">Contacta y <span class="italic">agenda</span> una cita</h3>
+          <p class="apoyo-description">
+            Comunícate por teléfono o correo. Consulta <em>tarifas, horarios y modalidad</em>. Dar este paso es ya un acto de cuidado propio.
+          </p>
+        </div>
+
+        <div class="apoyo-card reveal reveal-5" style="animation-delay:1s;">
+          <div class="apoyo-number">vi</div>
+          <h3 class="apoyo-title">Asiste y <span class="italic">evalúa</span> la primera sesión</h3>
+          <p class="apoyo-description">
+            Conoce al terapeuta. Valora si te sientes <em>cómodo, seguro y escuchado</em>. Recuerda: encontrar el acompañamiento correcto es un proceso de adaptación.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESPACIO 12: CIERRE -->
+  <section class="slide" id="slide-12" data-slide="12">
+    <div class="slide-marker reveal reveal-1"><span>XII</span> · CIERRE</div>
     <div class="quote-mark reveal reveal-2">"</div>
     <p class="closing-verse reveal reveal-3">
       Cerca está Jehová de los quebrantados de corazón;<br>
@@ -1586,7 +1742,8 @@
   <button class="slide-menu-item" data-target="8"><span class="num">VIII</span>Depresión — qué es</button>
   <button class="slide-menu-item" data-target="9"><span class="num">IX</span>Primeros auxilios</button>
   <button class="slide-menu-item" data-target="10"><span class="num">X</span>Respiración 4-7-8</button>
-  <button class="slide-menu-item" data-target="11"><span class="num">XI</span>Cierre</button>
+  <button class="slide-menu-item" data-target="11"><span class="num">XI</span>Cómo buscar apoyo</button>
+  <button class="slide-menu-item" data-target="12"><span class="num">XII</span>Cierre</button>
 </div>
 
 <div class="keyboard-hint">← → flechas · ESC menú</div>
@@ -1597,7 +1754,7 @@
   // ============================================
   const slides = document.querySelectorAll('.slide');
   const totalSlides = slides.length;
-  const romanNumerals = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+  const romanNumerals = ['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
   let currentIndex = 0;
 
   const progressBar = document.getElementById('progressBar');
@@ -1734,7 +1891,7 @@
   const temaGuardado = (function () {
     try { return localStorage.getItem(TEMA_STORAGE_KEY); } catch (e) { return null; }
   })();
-  const temaInicial = temaGuardado || document.documentElement.getAttribute('data-theme') || 'noche';
+  const temaInicial = temaGuardado || document.documentElement.getAttribute('data-theme') || 'bosque';
   aplicarTema(temaInicial);
 
   document.querySelectorAll('.theme-dot').forEach(dot => {
