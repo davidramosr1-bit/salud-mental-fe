@@ -534,9 +534,10 @@
   /* === SLIDE 3: VIDEO === */
   #slide-3 {
     padding: 0;
+    text-align: center;
   }
 
-  #slide-3 .video-container {
+  #slide-3 .elias-container {
     width: 100%;
     height: 100%;
     display: flex;
@@ -546,112 +547,19 @@
     padding: 4vh 6vw;
   }
 
-  #slide-3 .video-intro {
+  #slide-3 .elias-title {
     font-family: var(--serif);
-    font-style: italic;
-    color: var(--text-soft);
-    font-size: clamp(1rem, 1.4vw, 1.3rem);
-    margin-bottom: 2vh;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-
-  #slide-3 .video-title {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(3.5rem, 8vw, 8rem);
     font-weight: 400;
     color: var(--text-light);
-    margin-bottom: 3vh;
     text-align: center;
+    line-height: 1;
+    letter-spacing: -0.01em;
   }
 
-  #slide-3 .video-title .italic {
+  #slide-3 .elias-title .italic {
     font-style: italic;
     color: var(--accent-gold-light);
-  }
-
-  #slide-3 .video-frame {
-    width: 85%;
-    max-width: 1100px;
-    aspect-ratio: 16/9;
-    background: rgba(14, 36, 24, 0.6);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 184, 122, 0.2);
-    position: relative;
-    border: 1px dashed rgba(212, 184, 122, 0.18);
-  }
-
-  #slide-3 .video-frame video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .video-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-    background:
-      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212, 184, 122, 0.06), transparent 70%),
-      linear-gradient(135deg, rgba(22, 58, 37, 0.3), rgba(14, 36, 24, 0.6));
-  }
-
-  .video-placeholder-icon {
-    width: 5rem;
-    height: 5rem;
-    border: 2px solid rgba(212, 184, 122, 0.4);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    color: var(--accent-gold);
-    margin-bottom: 2.5vh;
-    padding-left: 0.3rem;
-    background: rgba(212, 184, 122, 0.06);
-  }
-
-  .video-placeholder-text {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: clamp(1.2rem, 1.6vw, 1.6rem);
-    color: var(--accent-gold-light);
-    margin-bottom: 1.5vh;
-    letter-spacing: 0.03em;
-  }
-
-  .video-placeholder-hint {
-    font-family: var(--sans);
-    font-weight: 300;
-    font-size: clamp(0.8rem, 0.9vw, 0.95rem);
-    color: var(--text-dim);
-    line-height: 1.7;
-    max-width: 480px;
-  }
-
-  .video-placeholder-hint .path {
-    font-family: 'Courier New', monospace;
-    background: rgba(212, 184, 122, 0.1);
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    color: var(--accent-gold-light);
-    font-size: 0.9em;
-  }
-
-  #slide-3 .video-caption {
-    margin-top: 3vh;
-    font-family: var(--serif);
-    font-style: italic;
-    color: var(--text-dim);
-    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-    text-align: center;
-    max-width: 700px;
   }
 
   /* === SLIDES 4 y 7: QR INTERACTIVO === */
@@ -1480,21 +1388,11 @@
     </div>
   </section>
 
-  <!-- ESPACIO 3: VIDEO -->
+  <!-- ESPACIO 3: EL PROFETA ELÍAS -->
   <section class="slide" id="slide-3" data-slide="3">
-    <div class="slide-marker reveal reveal-1"><span>III</span> · VIDEO</div>
-    <div class="video-container">
-      <h2 class="video-title reveal reveal-3">El profeta <span class="italic">Elías</span></h2>
-      <div class="video-frame reveal reveal-4" id="videoFrame">
-        <div class="video-placeholder">
-          <div class="video-placeholder-icon">▶</div>
-          <div class="video-placeholder-text">Espacio reservado para video</div>
-          <div class="video-placeholder-hint">
-            Para insertar un video, reemplaza el contenido de este recuadro<br>
-            o coloca el archivo en <span class="path">assets/</span> y actualiza la referencia.
-          </div>
-        </div>
-      </div>
+    <div class="slide-marker reveal reveal-1"><span>III</span> · EL PROFETA ELÍAS</div>
+    <div class="elias-container">
+      <h2 class="elias-title reveal reveal-3">El profeta <span class="italic">Elías</span></h2>
     </div>
   </section>
 
@@ -1704,7 +1602,7 @@
   <h3>Recorrido</h3>
   <button class="slide-menu-item" data-target="1"><span class="num">I</span>Bienvenida</button>
   <button class="slide-menu-item" data-target="2"><span class="num">II</span>Dinámica corporal</button>
-  <button class="slide-menu-item" data-target="3"><span class="num">III</span>Video</button>
+  <button class="slide-menu-item" data-target="3"><span class="num">III</span>El profeta Elías</button>
   <button class="slide-menu-item" data-target="4"><span class="num">IV</span>Ejercicio dirigido</button>
   <button class="slide-menu-item" data-target="5"><span class="num">V</span>Ansiedad — qué es</button>
   <button class="slide-menu-item" data-target="6"><span class="num">VI</span>Ansiedad — qué no es</button>
