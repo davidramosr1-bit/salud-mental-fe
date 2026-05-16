@@ -574,17 +574,74 @@
     width: 85%;
     max-width: 1100px;
     aspect-ratio: 16/9;
-    background: #000;
-    border-radius: 8px;
+    background: rgba(14, 36, 24, 0.6);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 165, 116, 0.2);
+    box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 184, 122, 0.2);
     position: relative;
+    border: 1px dashed rgba(212, 184, 122, 0.18);
   }
 
   #slide-3 .video-frame video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212, 184, 122, 0.06), transparent 70%),
+      linear-gradient(135deg, rgba(22, 58, 37, 0.3), rgba(14, 36, 24, 0.6));
+  }
+
+  .video-placeholder-icon {
+    width: 5rem;
+    height: 5rem;
+    border: 2px solid rgba(212, 184, 122, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--accent-gold);
+    margin-bottom: 2.5vh;
+    padding-left: 0.3rem;
+    background: rgba(212, 184, 122, 0.06);
+  }
+
+  .video-placeholder-text {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+    color: var(--accent-gold-light);
+    margin-bottom: 1.5vh;
+    letter-spacing: 0.03em;
+  }
+
+  .video-placeholder-hint {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(0.8rem, 0.9vw, 0.95rem);
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .video-placeholder-hint .path {
+    font-family: 'Courier New', monospace;
+    background: rgba(212, 184, 122, 0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    color: var(--accent-gold-light);
+    font-size: 0.9em;
   }
 
   #slide-3 .video-caption {
@@ -782,6 +839,36 @@
     background: #4ade80;
     animation: pulse-soft 1.8s ease-in-out infinite;
     box-shadow: 0 0 10px #4ade80;
+  }
+
+  .dashboard-link {
+    margin-top: 1.2vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.78rem, 0.9vw, 0.9rem);
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 184, 122, 0.15);
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .dashboard-link:hover {
+    color: var(--accent-gold-light);
+    border-color: rgba(212, 184, 122, 0.4);
+    background: rgba(212, 184, 122, 0.06);
+  }
+
+  .dashboard-link::before {
+    content: '↗';
+    font-size: 0.9em;
+    opacity: 0.7;
+    font-style: normal;
   }
 
   /* === SLIDES DE IMAGEN === */
@@ -1022,78 +1109,38 @@
     font-weight: 400;
   }
 
-  /* === SLIDE 11: GUÍA BUSCAR APOYO === */
-  #slide-11 .container {
-    max-width: 1500px;
+  /* === SLIDE 11: GUÍA BUSCAR APOYO (imagen) === */
+  #slide-11 {
+    padding: 3vh 4vw 4vh;
+  }
+
+  #slide-11 .apoyo-container {
+    max-width: 1600px;
     width: 100%;
-  }
-
-  .apoyo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 2vw 2.5vw;
-    margin-top: 5vh;
-  }
-
-  .apoyo-card {
-    padding: 3vh 1.8vw 2.5vh;
-    border: 1px solid rgba(212, 184, 122, 0.22);
-    border-radius: 10px;
-    background: rgba(22, 58, 37, 0.35);
-    backdrop-filter: blur(8px);
-    text-align: left;
-    position: relative;
-    transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .apoyo-card:hover {
-    border-color: rgba(212, 184, 122, 0.45);
-    transform: translateY(-2px);
-  }
-
-  .apoyo-number {
-    position: absolute;
-    top: -1.3rem;
-    left: 1.8rem;
-    width: 2.7rem;
-    height: 2.7rem;
-    background: var(--bg-1);
-    border: 1px solid var(--accent-gold);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--serif);
-    font-style: italic;
-    color: var(--accent-gold);
-    font-size: 1.25rem;
+    height: 100%;
   }
 
-  .apoyo-title {
-    font-family: var(--serif);
-    font-size: clamp(1.15rem, 1.55vw, 1.55rem);
-    color: var(--accent-gold-light);
-    margin-bottom: 1.2vh;
-    padding-top: 1.5vh;
-    line-height: 1.25;
-    font-weight: 500;
+  .apoyo-image-frame {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 82vh;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 184, 122, 0.18);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    line-height: 0;
   }
 
-  .apoyo-title .italic { font-style: italic; }
-
-  .apoyo-description {
-    font-family: var(--sans);
-    font-size: clamp(0.82rem, 0.95vw, 0.95rem);
-    color: var(--text-soft);
-    line-height: 1.65;
-    font-weight: 300;
-  }
-
-  .apoyo-description em {
-    color: var(--accent-gold-light);
-    font-style: italic;
-    font-weight: 400;
+  .apoyo-image-frame img {
+    display: block;
+    max-width: 100%;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   /* === SLIDE FINAL: CIERRE === */
@@ -1433,22 +1480,21 @@
     </div>
   </section>
 
-  <!-- ESPACIO 3: VIDEO DE ELÍAS -->
+  <!-- ESPACIO 3: VIDEO -->
   <section class="slide" id="slide-3" data-slide="3">
-    <div class="slide-marker reveal reveal-1"><span>III</span> · TESTIMONIO BÍBLICO</div>
+    <div class="slide-marker reveal reveal-1"><span>III</span> · VIDEO</div>
     <div class="video-container">
-      <p class="video-intro reveal reveal-2">— Un profeta agotado bajo el enebro —</p>
-      <h2 class="video-title reveal reveal-3">La historia de <span class="italic">Elías</span></h2>
-      <div class="video-frame reveal reveal-4">
-        <video id="eliasVideo" controls preload="metadata">
-          <source src="assets/elias.mp4" type="video/mp4">
-          Tu navegador no soporta video HTML5.
-        </video>
+      <h2 class="video-title reveal reveal-3"><span class="italic">Un momento</span> para reflexionar</h2>
+      <div class="video-frame reveal reveal-4" id="videoFrame">
+        <div class="video-placeholder">
+          <div class="video-placeholder-icon">▶</div>
+          <div class="video-placeholder-text">Espacio reservado para video</div>
+          <div class="video-placeholder-hint">
+            Para insertar un video, reemplaza el contenido de este recuadro<br>
+            o coloca el archivo en <span class="path">assets/</span> y actualiza la referencia.
+          </div>
+        </div>
       </div>
-      <p class="video-caption reveal reveal-5">
-        «Quítame la vida, oh Jehová, basta ya…»<br>
-        — 1 Reyes 19:4
-      </p>
     </div>
   </section>
 
@@ -1482,6 +1528,9 @@
           <div class="dot"></div>
           <span><span id="counter-ejercicio">0</span> respuestas en vivo</span>
         </div>
+        <a href="dashboard.html" target="_blank" class="dashboard-link" rel="noopener">
+          Abrir panel de respuestas
+        </a>
       </div>
     </div>
   </section>
@@ -1540,6 +1589,9 @@
           <div class="dot"></div>
           <span><span id="counter-palabras">0</span> palabras compartidas</span>
         </div>
+        <a href="dashboard.html" target="_blank" class="dashboard-link" rel="noopener">
+          Abrir panel de respuestas
+        </a>
       </div>
     </div>
   </section>
@@ -1549,7 +1601,6 @@
     <div class="slide-marker reveal reveal-1"><span>VIII</span> · DEPRESIÓN</div>
     <div class="container">
       <h2 class="section-title reveal reveal-2">¿Qué es la <span class="italic">depresión</span>?</h2>
-      <p class="section-subtitle reveal reveal-3">Síntomas, consuelo y esperanza.</p>
       <div class="image-frame reveal reveal-4">
         <img src="assets/image3.png" alt="Qué es la depresión - síntomas" />
       </div>
@@ -1638,60 +1689,11 @@
   </section>
 
   <!-- ESPACIO 11: GUÍA PARA BUSCAR APOYO PSICOLÓGICO -->
-  <section class="slide" id="slide-11" data-slide="11">
+  <section class="slide image-slide" id="slide-11" data-slide="11">
     <div class="slide-marker reveal reveal-1"><span>XI</span> · BUSCAR APOYO</div>
-    <div class="container">
-      <h2 class="section-title reveal reveal-2">Guía para <span class="italic">buscar apoyo</span> psicológico</h2>
-      <p class="section-subtitle reveal reveal-3">Seis pasos para acompañarte en este caminar.</p>
-
-      <div class="apoyo-grid">
-        <div class="apoyo-card reveal reveal-4">
-          <div class="apoyo-number">i</div>
-          <h3 class="apoyo-title">Identifica <span class="italic">la necesidad</span></h3>
-          <p class="apoyo-description">
-            Reconoce tus sentimientos. <em>Ansiedad, tristeza, cambios en el sueño o apetito</em> son señales para escuchar con honestidad lo que tu cuerpo y mente expresan.
-          </p>
-        </div>
-
-        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.55s;">
-          <div class="apoyo-number">ii</div>
-          <h3 class="apoyo-title">Busca <span class="italic">información</span> y opciones</h3>
-          <p class="apoyo-description">
-            Explora terapeutas y clínicas disponibles, tanto <em>públicas como privadas</em>. La terapia en línea también es una alternativa válida y accesible.
-          </p>
-        </div>
-
-        <div class="apoyo-card reveal reveal-4" style="animation-delay:0.7s;">
-          <div class="apoyo-number">iii</div>
-          <h3 class="apoyo-title">Pide <span class="italic">referencias</span> o recomendaciones</h3>
-          <p class="apoyo-description">
-            Habla con <em>amigos, familia o médicos de confianza</em>. Busca testimonios y reseñas. Las experiencias compartidas son una guía valiosa.
-          </p>
-        </div>
-
-        <div class="apoyo-card reveal reveal-5">
-          <div class="apoyo-number">iv</div>
-          <h3 class="apoyo-title">Verifica <span class="italic">credenciales</span> y especialidad</h3>
-          <p class="apoyo-description">
-            Asegúrate de que el profesional tenga <em>licencia y formación adecuada</em> para acompañar tu necesidad específica.
-          </p>
-        </div>
-
-        <div class="apoyo-card reveal reveal-5" style="animation-delay:0.85s;">
-          <div class="apoyo-number">v</div>
-          <h3 class="apoyo-title">Contacta y <span class="italic">agenda</span> una cita</h3>
-          <p class="apoyo-description">
-            Comunícate por teléfono o correo. Consulta <em>tarifas, horarios y modalidad</em>. Dar este paso es ya un acto de cuidado propio.
-          </p>
-        </div>
-
-        <div class="apoyo-card reveal reveal-5" style="animation-delay:1s;">
-          <div class="apoyo-number">vi</div>
-          <h3 class="apoyo-title">Asiste y <span class="italic">evalúa</span> la primera sesión</h3>
-          <p class="apoyo-description">
-            Conoce al terapeuta. Valora si te sientes <em>cómodo, seguro y escuchado</em>. Recuerda: encontrar el acompañamiento correcto es un proceso de adaptación.
-          </p>
-        </div>
+    <div class="container apoyo-container">
+      <div class="image-frame apoyo-image-frame reveal reveal-2">
+        <img src="assets/guia_apoyo.png" alt="Guía paso a paso para buscar apoyo psicológico" />
       </div>
     </div>
   </section>
@@ -1734,7 +1736,7 @@
   <h3>Recorrido</h3>
   <button class="slide-menu-item" data-target="1"><span class="num">I</span>Bienvenida</button>
   <button class="slide-menu-item" data-target="2"><span class="num">II</span>Dinámica corporal</button>
-  <button class="slide-menu-item" data-target="3"><span class="num">III</span>La historia de Elías</button>
+  <button class="slide-menu-item" data-target="3"><span class="num">III</span>Video</button>
   <button class="slide-menu-item" data-target="4"><span class="num">IV</span>Ejercicio dirigido</button>
   <button class="slide-menu-item" data-target="5"><span class="num">V</span>Ansiedad — qué es</button>
   <button class="slide-menu-item" data-target="6"><span class="num">VI</span>Ansiedad — qué no es</button>
