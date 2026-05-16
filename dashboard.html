@@ -103,6 +103,43 @@ body {
   border-radius: 100px;
   border: 1px solid rgba(212, 184, 122, 0.2);
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-soft);
+  text-decoration: none;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1.2rem;
+  border-radius: 100px;
+  border: 1px solid rgba(212, 184, 122, 0.25);
+  background: transparent;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--accent-gold-light);
+  border-color: rgba(212, 184, 122, 0.5);
+  background: rgba(212, 184, 122, 0.06);
+}
+
+.back-link::before {
+  content: '←';
+  font-size: 1.1em;
+  font-style: normal;
+  opacity: 0.85;
+}
 .status-dot {
   width: 10px;
   height: 10px;
@@ -527,9 +564,12 @@ body {
     <div class="dashboard-subtitle">Panel de las psicólogas</div>
     <h1 class="dashboard-title">Respuestas <span class="italic">en vivo</span></h1>
   </div>
-  <div class="connection-status">
-    <div class="status-dot" id="statusDot"></div>
-    <div class="status-text" id="statusText">Conectado en tiempo real</div>
+  <div class="header-actions">
+    <a href="index.html" class="back-link">Volver a la presentación</a>
+    <div class="connection-status">
+      <div class="status-dot" id="statusDot"></div>
+      <div class="status-text" id="statusText">Conectado en tiempo real</div>
+    </div>
   </div>
 </header>
 
@@ -761,12 +801,18 @@ body {
   // ==========================================
   function actualizarPalabras(palabrasObj) {
     const palabras = palabrasObj ? Object.values(palabrasObj) : [];
+    const cloudContainer = document.getElementById('cloudContainer');
+    const emptyState = document.getElementById('palabrasEmptyState');
+
+    // Limpiar burbujas previas conservando el empty-state
+    cloudContainer.querySelectorAll('.word-bubble').forEach(b => b.remove());
 
     if (palabras.length === 0) {
-      document.getElementById('palabrasEmptyState').style.display = 'block';
+      if (emptyState) {
+        emptyState.style.display = 'block';
+        if (!cloudContainer.contains(emptyState)) cloudContainer.appendChild(emptyState);
+      }
       document.getElementById('recentWordsBox').style.display = 'none';
-      document.getElementById('cloudContainer').innerHTML = '';
-      document.getElementById('cloudContainer').appendChild(document.getElementById('palabrasEmptyState'));
       document.getElementById('metricaPalabrasUnicas').textContent = '0';
       document.getElementById('metricaPalabrasTotales').textContent = '0';
       document.getElementById('metricaPalabraTop').textContent = '—';
@@ -775,15 +821,17 @@ body {
       return;
     }
 
-    document.getElementById('palabrasEmptyState').style.display = 'none';
+    if (emptyState) emptyState.style.display = 'none';
     document.getElementById('recentWordsBox').style.display = 'block';
 
     // Agrupar por palabra (normalizada)
     const palabrasMap = new Map();
     palabras.forEach(p => {
-      const key = p.palabra.trim().toLowerCase();
+      if (!p || !p.palabra) return;
+      const key = String(p.palabra).trim().toLowerCase();
+      if (!key) return;
       if (!palabrasMap.has(key)) {
-        palabrasMap.set(key, { palabra: p.palabra.trim(), count: 0, ultimoTimestamp: 0 });
+        palabrasMap.set(key, { palabra: String(p.palabra).trim(), count: 0, ultimoTimestamp: 0 });
       }
       const entry = palabrasMap.get(key);
       entry.count++;
@@ -811,22 +859,17 @@ body {
     // Nube de palabras
     const maxCount = Math.max(...palabrasList.map(p => p.count));
     const ahora = Date.now();
-    const cloudContainer = document.getElementById('cloudContainer');
-    cloudContainer.innerHTML = '';
-    cloudContainer.appendChild(document.getElementById('palabrasEmptyState'));
-    document.getElementById('palabrasEmptyState').style.display = 'none';
 
     palabrasList.forEach(p => {
       const bubble = document.createElement('div');
       let sizeClass = 'size-1';
-      const ratio = p.count / maxCount;
+      const ratio = maxCount > 0 ? p.count / maxCount : 0;
       if (ratio >= 0.8) sizeClass = 'size-5';
       else if (ratio >= 0.6) sizeClass = 'size-4';
       else if (ratio >= 0.4) sizeClass = 'size-3';
       else if (ratio >= 0.2) sizeClass = 'size-2';
 
       bubble.className = 'word-bubble ' + sizeClass;
-      // Marcar como reciente si fue en los últimos 6 segundos
       if (ahora - p.ultimoTimestamp < 6000) bubble.classList.add('recent');
       bubble.innerHTML = `${escapeHtml(p.palabra)}${p.count > 1 ? `<span class="count">×${p.count}</span>` : ''}`;
       cloudContainer.appendChild(bubble);
@@ -837,6 +880,7 @@ body {
     const recentList = document.getElementById('recentList');
     recentList.innerHTML = '';
     ultimas.forEach(p => {
+      if (!p || !p.palabra) return;
       const item = document.createElement('div');
       item.className = 'recent-item';
       item.innerHTML = `${escapeHtml(p.palabra)}<span class="time">${formatearTiempo(p.timestamp)}</span>`;
