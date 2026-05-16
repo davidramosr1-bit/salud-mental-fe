@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard en Vivo · Salud Mental en la Fe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA91o4CJrJ8Cz2fASwrmMh4rZg1NenYwuY",
+    authDomain: "salud-mental-fe.firebaseapp.com",
+    databaseURL: "https://salud-mental-fe-default-rtdb.firebaseio.com",
+    projectId: "salud-mental-fe",
+    storageBucket: "salud-mental-fe.firebasestorage.app",
+    messagingSenderId: "82434998420",
+    appId: "1:82434998420:web:75b74e0e2611b28a30b481"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+<style>
+:root {
+  --bg-1: #0a1628;
+  --bg-2: #142340;
+  --bg-3: #1d3257;
+  --accent-gold: #d4a574;
+  --accent-gold-light: #e8c89f;
+  --accent-warm: #c9826b;
+  --accent-cream: #f5ebd9;
+  --text-light: #f5ebd9;
+  --text-soft: #d9c9a8;
+  --text-dim: #8a9ab0;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  min-height: 100vh;
+  font-family: var(--sans);
+  background: var(--bg-1);
+  color: var(--text-light);
+  font-weight: 300;
+}
+body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 165, 116, 0.08), transparent 70%),
+    var(--bg-1);
+  overflow-x: hidden;
+}
+
+.dashboard-header {
+  padding: 2rem 3rem 1.5rem;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.dashboard-title {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: var(--text-light);
+  letter-spacing: -0.01em;
+}
+.dashboard-title .italic {
+  font-style: italic;
+  color: var(--accent-gold-light);
+}
+.dashboard-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(212, 165, 116, 0.08);
+  padding: 0.6rem 1.2rem;
+  border-radius: 100px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 12px var(--success);
+  animation: pulse 2s ease-in-out infinite;
+}
+.status-dot.offline {
+  background: var(--warning);
+  box-shadow: 0 0 12px var(--warning);
+}
+.status-text {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* === TABS === */
+.tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 3rem;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+  margin-top: 0.5rem;
+}
+.tab {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  padding: 1rem 1.8rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+.tab:hover { color: var(--text-soft); }
+.tab.active {
+  color: var(--accent-gold-light);
+}
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-gold);
+}
+.tab-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: rgba(212, 165, 116, 0.2);
+  border-radius: 100px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent-gold);
+}
+
+/* === VISTAS === */
+.view {
+  display: none;
+  padding: 2rem 3rem 4rem;
+  animation: fadeIn 0.5s ease;
+}
+.view.active { display: block; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+/* === EJERCICIO: METRICAS Y POR-ESCENARIO === */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.metric-card {
+  background: rgba(20, 35, 64, 0.5);
+  border: 1px solid rgba(212, 165, 116, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--accent-gold);
+  opacity: 0.6;
+}
+.metric-label {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+.metric-value {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--accent-gold-light);
+  line-height: 1;
+}
+.metric-value .small {
+  font-size: 0.4em;
+  color: var(--text-dim);
+  margin-left: 0.3rem;
+}
+.metric-sub {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(212, 165, 116, 0.4), transparent);
+}
+.section-title .italic { font-style: italic; color: var(--accent-gold-light); }
+
+.escenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.escenario-card {
+  background: rgba(20, 35, 64, 0.4);
+  border: 1px solid rgba(212, 165, 116, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.escenario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+}
+.escenario-num {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.escenario-correcta {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  padding: 0.3rem 0.7rem;
+  border-radius: 100px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.escenario-correcta .label-correcta { color: var(--success); }
+
+.bar-row {
+  margin-bottom: 1rem;
+}
+.bar-row:last-child { margin-bottom: 0; }
+.bar-row-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+.bar-row-label {
+  color: var(--text-soft);
+  font-family: var(--sans);
+  font-weight: 400;
+}
+.bar-row-label.correct-answer {
+  color: var(--success);
+  font-weight: 500;
+}
+.bar-row-count {
+  color: var(--text-dim);
+  font-family: var(--serif);
+  font-style: italic;
+}
+.bar-track {
+  height: 8px;
+  background: rgba(245, 235, 217, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: var(--accent-gold);
+  border-radius: 100px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+.bar-fill.correct {
+  background: var(--success);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-dim);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  background: rgba(20, 35, 64, 0.3);
+  border-radius: 12px;
+  border: 1px dashed rgba(212, 165, 116, 0.2);
+}
+.empty-state .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* === PALABRAS: NUBE === */
+.cloud-container {
+  background: rgba(20, 35, 64, 0.4);
+  border: 1px solid rgba(212, 165, 116, 0.15);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  min-height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  position: relative;
+}
+.word-bubble {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  background: rgba(212, 165, 116, 0.12);
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  border-radius: 100px;
+  color: var(--text-light);
+  font-family: var(--serif);
+  font-weight: 500;
+  transition: all 0.5s ease;
+  animation: wordIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+.word-bubble:hover {
+  background: rgba(212, 165, 116, 0.2);
+  transform: scale(1.05);
+}
+.word-bubble.recent {
+  background: rgba(212, 165, 116, 0.3);
+  border-color: var(--accent-gold);
+  color: var(--accent-cream);
+  box-shadow: 0 0 20px rgba(212, 165, 116, 0.3);
+}
+.word-bubble .count {
+  margin-left: 0.5rem;
+  font-size: 0.75em;
+  opacity: 0.7;
+  font-family: var(--sans);
+  font-weight: 300;
+}
+@keyframes wordIn {
+  from { opacity: 0; transform: scale(0.6) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Tamaños diferenciales según frecuencia */
+.word-bubble.size-1 { font-size: 1rem; padding: 0.5rem 1rem; }
+.word-bubble.size-2 { font-size: 1.2rem; padding: 0.6rem 1.3rem; }
+.word-bubble.size-3 { font-size: 1.5rem; padding: 0.7rem 1.6rem; }
+.word-bubble.size-4 { font-size: 1.8rem; padding: 0.8rem 1.9rem; }
+.word-bubble.size-5 { font-size: 2.2rem; padding: 0.9rem 2.2rem; font-weight: 600; }
+
+.recent-words {
+  margin-top: 2rem;
+  background: rgba(20, 35, 64, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  border-left: 3px solid var(--accent-gold);
+}
+.recent-words h3 {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+.recent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+.recent-item {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  background: rgba(245, 235, 217, 0.05);
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 300;
+}
+.recent-item .time {
+  color: var(--text-dim);
+  font-style: italic;
+  margin-left: 0.4rem;
+  font-family: var(--serif);
+  font-size: 0.85em;
+}
+
+/* === ACCIONES === */
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.action-btn {
+  background: transparent;
+  border: 1px solid rgba(212, 165, 116, 0.4);
+  color: var(--accent-gold-light);
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+}
+.action-btn:hover {
+  background: rgba(212, 165, 116, 0.1);
+}
+.action-btn.danger {
+  border-color: rgba(248, 113, 113, 0.4);
+  color: rgba(248, 113, 113, 0.9);
+}
+.action-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* Modal de confirmación */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--bg-2);
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+.modal h3 {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--accent-gold-light);
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.modal p {
+  color: var(--text-soft);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.modal-actions { display: flex; gap: 0.8rem; justify-content: center; }
+
+/* Notas inferiores */
+.footer-note {
+  margin-top: 3rem;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(212, 165, 116, 0.1);
+}
+</style>
+</head>
+<body>
+
+<header class="dashboard-header">
+  <div>
+    <div class="dashboard-subtitle">Panel de las psicólogas</div>
+    <h1 class="dashboard-title">Respuestas <span class="italic">en vivo</span></h1>
+  </div>
+  <div class="connection-status">
+    <div class="status-dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Conectado en tiempo real</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-view="ejercicio">
+    Ejercicio dirigido
+    <span class="tab-badge" id="badgeEjercicio">0</span>
+  </button>
+  <button class="tab" data-view="palabras">
+    Palabras · Depresión
+    <span class="tab-badge" id="badgePalabras">0</span>
+  </button>
+</div>
+
+<!-- ========== VISTA EJERCICIO ========== -->
+<section class="view active" id="view-ejercicio">
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Participantes únicos</div>
+      <div class="metric-value" id="metricaParticipantes">0</div>
+      <div class="metric-sub">han respondido al menos uno</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Respuestas totales</div>
+      <div class="metric-value" id="metricaRespuestas">0</div>
+      <div class="metric-sub" id="metricaPromedio">— por participante</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Aciertos generales</div>
+      <div class="metric-value" id="metricaAciertos">0<span class="small">%</span></div>
+      <div class="metric-sub" id="metricaAciertosSub">0 correctas de 0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Última respuesta</div>
+      <div class="metric-value" style="font-size:1.5rem;color:var(--text-soft);font-style:italic;" id="metricaUltima">—</div>
+      <div class="metric-sub" id="metricaUltimaSub">aún sin respuestas</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Detalle <span class="italic">por escenario</span></h2>
+
+  <div class="escenarios-grid" id="escenariosGrid">
+    <!-- Los 4 escenarios se generan dinámicamente -->
+  </div>
+
+  <div class="actions">
+    <button class="action-btn danger" id="resetEjercicio">Reiniciar resultados del ejercicio</button>
+  </div>
+
+</section>
+
+<!-- ========== VISTA PALABRAS ========== -->
+<section class="view" id="view-palabras">
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Palabras únicas</div>
+      <div class="metric-value" id="metricaPalabrasUnicas">0</div>
+      <div class="metric-sub">distintas evocaciones</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Total enviadas</div>
+      <div class="metric-value" id="metricaPalabrasTotales">0</div>
+      <div class="metric-sub" id="metricaPalabrasParticipantes">0 participantes</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Más mencionada</div>
+      <div class="metric-value" style="font-size:1.8rem;color:var(--accent-gold-light);font-style:italic;font-family:var(--serif);" id="metricaPalabraTop">—</div>
+      <div class="metric-sub" id="metricaPalabraTopSub">—</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Nube de <span class="italic">palabras compartidas</span></h2>
+
+  <div class="cloud-container" id="cloudContainer">
+    <div class="empty-state" id="palabrasEmptyState">
+      <div class="icon">✦</div>
+      Esperando las primeras palabras...<br>
+      <span style="font-size:0.9rem;opacity:0.7;">Las palabras aparecerán aquí en tiempo real conforme los jóvenes participen.</span>
+    </div>
+  </div>
+
+  <div class="recent-words" id="recentWordsBox" style="display:none;">
+    <h3>— Últimas palabras enviadas —</h3>
+    <div class="recent-list" id="recentList"></div>
+  </div>
+
+  <div class="actions">
+    <button class="action-btn danger" id="resetPalabras">Limpiar todas las palabras</button>
+  </div>
+
+</section>
+
+<div class="footer-note">
+  Este panel se actualiza automáticamente. Pulsa F5 si pierdes la conexión.
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">¿Confirmar?</h3>
+    <p id="modalText">Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="action-btn" id="modalCancel">Cancelar</button>
+      <button class="action-btn danger" id="modalConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  //   TABS
+  // ==========================================
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    });
+  });
+
+  // ==========================================
+  //   ESCENARIOS - estructura
+  // ==========================================
+  const escenarios = [
+    { id: '1', titulo: 'Escenario 01', correcta: 'ansiedad' },
+    { id: '2', titulo: 'Escenario 02', correcta: 'tristeza' },
+    { id: '3', titulo: 'Escenario 03', correcta: 'depresion' },
+    { id: '4', titulo: 'Escenario 04', correcta: 'ansiedad' }
+  ];
+
+  function generarEscenariosGrid() {
+    const grid = document.getElementById('escenariosGrid');
+    grid.innerHTML = '';
+    escenarios.forEach(esc => {
+      const card = document.createElement('div');
+      card.className = 'escenario-card';
+      card.id = 'esc-card-' + esc.id;
+      card.innerHTML = `
+        <div class="escenario-header">
+          <div class="escenario-num">${esc.titulo}</div>
+          <div class="escenario-correcta">Correcta: <span class="label-correcta">${capitalizar(esc.correcta)}</span></div>
+        </div>
+        <div class="bar-row" data-valor="tristeza">
+          <div class="bar-row-header">
+            <span class="bar-row-label ${esc.correcta === 'tristeza' ? 'correct-answer' : ''}">Tristeza</span>
+            <span class="bar-row-count" data-count>0</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill ${esc.correcta === 'tristeza' ? 'correct' : ''}"></div></div>
+        </div>
+        <div class="bar-row" data-valor="depresion">
+          <div class="bar-row-header">
+            <span class="bar-row-label ${esc.correcta === 'depresion' ? 'correct-answer' : ''}">Depresión</span>
+            <span class="bar-row-count" data-count>0</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill ${esc.correcta === 'depresion' ? 'correct' : ''}"></div></div>
+        </div>
+        <div class="bar-row" data-valor="ansiedad">
+          <div class="bar-row-header">
+            <span class="bar-row-label ${esc.correcta === 'ansiedad' ? 'correct-answer' : ''}">Ansiedad</span>
+            <span class="bar-row-count" data-count>0</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill ${esc.correcta === 'ansiedad' ? 'correct' : ''}"></div></div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+  generarEscenariosGrid();
+
+  function capitalizar(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  // ==========================================
+  //   PROCESAR DATOS DEL EJERCICIO
+  // ==========================================
+  function actualizarEjercicio(respuestasObj) {
+    const respuestas = respuestasObj ? Object.values(respuestasObj) : [];
+
+    const participantesUnicos = new Set(respuestas.map(r => r.participante));
+    const totalRespuestas = respuestas.length;
+    const aciertos = respuestas.filter(r => r.acierto).length;
+    const porcentajeAciertos = totalRespuestas > 0 ? Math.round(aciertos / totalRespuestas * 100) : 0;
+
+    document.getElementById('metricaParticipantes').textContent = participantesUnicos.size;
+    document.getElementById('metricaRespuestas').textContent = totalRespuestas;
+    const promedio = participantesUnicos.size > 0
+      ? (totalRespuestas / participantesUnicos.size).toFixed(1)
+      : '—';
+    document.getElementById('metricaPromedio').textContent =
+      participantesUnicos.size > 0 ? `${promedio} respuestas por participante` : '— por participante';
+    document.getElementById('metricaAciertos').innerHTML = porcentajeAciertos + '<span class="small">%</span>';
+    document.getElementById('metricaAciertosSub').textContent =
+      `${aciertos} correctas de ${totalRespuestas}`;
+
+    document.getElementById('badgeEjercicio').textContent = totalRespuestas;
+
+    // Última respuesta
+    if (respuestas.length > 0) {
+      const ordenadas = [...respuestas].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+      const ultima = ordenadas[0];
+      document.getElementById('metricaUltima').textContent =
+        `${capitalizar(ultima.respuesta)}`;
+      document.getElementById('metricaUltimaSub').textContent =
+        `${ultima.acierto ? '✓ Acertó' : '✕ No acertó'} · Escenario ${ultima.escenario}`;
+    }
+
+    // Por escenario
+    escenarios.forEach(esc => {
+      const respEscenario = respuestas.filter(r => r.escenario === esc.id);
+      const total = respEscenario.length;
+
+      ['tristeza', 'depresion', 'ansiedad'].forEach(valor => {
+        const count = respEscenario.filter(r => r.respuesta === valor).length;
+        const percent = total > 0 ? (count / total * 100) : 0;
+        const card = document.getElementById('esc-card-' + esc.id);
+        const row = card.querySelector('.bar-row[data-valor="' + valor + '"]');
+        row.querySelector('[data-count]').textContent = count;
+        row.querySelector('.bar-fill').style.width = percent + '%';
+      });
+    });
+  }
+
+  // ==========================================
+  //   PROCESAR DATOS DE PALABRAS
+  // ==========================================
+  function actualizarPalabras(palabrasObj) {
+    const palabras = palabrasObj ? Object.values(palabrasObj) : [];
+
+    if (palabras.length === 0) {
+      document.getElementById('palabrasEmptyState').style.display = 'block';
+      document.getElementById('recentWordsBox').style.display = 'none';
+      document.getElementById('cloudContainer').innerHTML = '';
+      document.getElementById('cloudContainer').appendChild(document.getElementById('palabrasEmptyState'));
+      document.getElementById('metricaPalabrasUnicas').textContent = '0';
+      document.getElementById('metricaPalabrasTotales').textContent = '0';
+      document.getElementById('metricaPalabraTop').textContent = '—';
+      document.getElementById('metricaPalabraTopSub').textContent = '—';
+      document.getElementById('badgePalabras').textContent = '0';
+      return;
+    }
+
+    document.getElementById('palabrasEmptyState').style.display = 'none';
+    document.getElementById('recentWordsBox').style.display = 'block';
+
+    // Agrupar por palabra (normalizada)
+    const palabrasMap = new Map();
+    palabras.forEach(p => {
+      const key = p.palabra.trim().toLowerCase();
+      if (!palabrasMap.has(key)) {
+        palabrasMap.set(key, { palabra: p.palabra.trim(), count: 0, ultimoTimestamp: 0 });
+      }
+      const entry = palabrasMap.get(key);
+      entry.count++;
+      if ((p.timestamp || 0) > entry.ultimoTimestamp) entry.ultimoTimestamp = p.timestamp || 0;
+    });
+
+    const palabrasList = Array.from(palabrasMap.values())
+      .sort((a, b) => b.count - a.count);
+
+    const participantesUnicos = new Set(palabras.map(p => p.participante));
+
+    // Métricas
+    document.getElementById('metricaPalabrasUnicas').textContent = palabrasList.length;
+    document.getElementById('metricaPalabrasTotales').textContent = palabras.length;
+    document.getElementById('metricaPalabrasParticipantes').textContent =
+      `${participantesUnicos.size} participante${participantesUnicos.size === 1 ? '' : 's'}`;
+    document.getElementById('badgePalabras').textContent = palabras.length;
+
+    if (palabrasList.length > 0) {
+      document.getElementById('metricaPalabraTop').textContent = palabrasList[0].palabra;
+      document.getElementById('metricaPalabraTopSub').textContent =
+        `mencionada ${palabrasList[0].count} ${palabrasList[0].count === 1 ? 'vez' : 'veces'}`;
+    }
+
+    // Nube de palabras
+    const maxCount = Math.max(...palabrasList.map(p => p.count));
+    const ahora = Date.now();
+    const cloudContainer = document.getElementById('cloudContainer');
+    cloudContainer.innerHTML = '';
+    cloudContainer.appendChild(document.getElementById('palabrasEmptyState'));
+    document.getElementById('palabrasEmptyState').style.display = 'none';
+
+    palabrasList.forEach(p => {
+      const bubble = document.createElement('div');
+      let sizeClass = 'size-1';
+      const ratio = p.count / maxCount;
+      if (ratio >= 0.8) sizeClass = 'size-5';
+      else if (ratio >= 0.6) sizeClass = 'size-4';
+      else if (ratio >= 0.4) sizeClass = 'size-3';
+      else if (ratio >= 0.2) sizeClass = 'size-2';
+
+      bubble.className = 'word-bubble ' + sizeClass;
+      // Marcar como reciente si fue en los últimos 6 segundos
+      if (ahora - p.ultimoTimestamp < 6000) bubble.classList.add('recent');
+      bubble.innerHTML = `${escapeHtml(p.palabra)}${p.count > 1 ? `<span class="count">×${p.count}</span>` : ''}`;
+      cloudContainer.appendChild(bubble);
+    });
+
+    // Lista de últimas
+    const ultimas = [...palabras].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 12);
+    const recentList = document.getElementById('recentList');
+    recentList.innerHTML = '';
+    ultimas.forEach(p => {
+      const item = document.createElement('div');
+      item.className = 'recent-item';
+      item.innerHTML = `${escapeHtml(p.palabra)}<span class="time">${formatearTiempo(p.timestamp)}</span>`;
+      recentList.appendChild(item);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function formatearTiempo(ts) {
+    if (!ts) return '—';
+    const diff = Date.now() - ts;
+    if (diff < 5000) return 'ahora';
+    if (diff < 60000) return `hace ${Math.floor(diff/1000)}s`;
+    if (diff < 3600000) return `hace ${Math.floor(diff/60000)} min`;
+    return new Date(ts).toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  // ==========================================
+  //   FIREBASE + LOCALSTORAGE FALLBACK
+  // ==========================================
+  let usingLocalFallback = false;
+  let firebaseModule = null;
+  let db = null;
+
+  function waitForFirebase(cb) {
+    if (window.__firebase) cb();
+    else setTimeout(() => waitForFirebase(cb), 100);
+  }
+
+  waitForFirebase(() => {
+    try {
+      firebaseModule = window.__firebase;
+      const app = firebaseModule.initializeApp(firebaseModule.firebaseConfig);
+      db = firebaseModule.getDatabase(app);
+
+      const { ref, onValue } = firebaseModule;
+
+      onValue(ref(db, 'ejercicio/respuestas'), (snapshot) => {
+        actualizarEjercicio(snapshot.val());
+        marcarConectado(true);
+      }, (error) => {
+        console.log('Error Firebase ejercicio:', error.message);
+        usarLocalFallback();
+      });
+
+      onValue(ref(db, 'palabras/lista'), (snapshot) => {
+        actualizarPalabras(snapshot.val());
+        marcarConectado(true);
+      }, (error) => {
+        console.log('Error Firebase palabras:', error.message);
+        usarLocalFallback();
+      });
+
+    } catch (e) {
+      console.log('No se pudo iniciar Firebase, usando localStorage:', e.message);
+      usarLocalFallback();
+    }
+  });
+
+  function marcarConectado(conectado) {
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    if (conectado) {
+      dot.classList.remove('offline');
+      text.textContent = 'Conectado en tiempo real';
+    } else {
+      dot.classList.add('offline');
+      text.textContent = usingLocalFallback ? 'Modo local (sin Firebase)' : 'Reconectando...';
+    }
+  }
+
+  function usarLocalFallback() {
+    if (usingLocalFallback) return;
+    usingLocalFallback = true;
+    marcarConectado(false);
+
+    function leerLocal() {
+      try {
+        const eje = JSON.parse(localStorage.getItem('ejercicio_respuestas') || '[]');
+        const ejeObj = {};
+        eje.forEach((r, i) => ejeObj['l_' + i] = r);
+        actualizarEjercicio(ejeObj);
+
+        const pal = JSON.parse(localStorage.getItem('palabras_lista') || '[]');
+        const palObj = {};
+        pal.forEach((p, i) => palObj['l_' + i] = p);
+        actualizarPalabras(palObj);
+      } catch (e) { console.error(e); }
+    }
+    leerLocal();
+    setInterval(leerLocal, 1500);
+  }
+
+  // ==========================================
+  //   RESET BUTTONS
+  // ==========================================
+  const modal = document.getElementById('modal');
+  let pendingAction = null;
+
+  function abrirModal(titulo, texto, accion) {
+    document.getElementById('modalTitle').textContent = titulo;
+    document.getElementById('modalText').textContent = texto;
+    pendingAction = accion;
+    modal.classList.add('show');
+  }
+
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    modal.classList.remove('show');
+    pendingAction = null;
+  });
+
+  document.getElementById('modalConfirm').addEventListener('click', () => {
+    if (pendingAction) pendingAction();
+    modal.classList.remove('show');
+    pendingAction = null;
+  });
+
+  document.getElementById('resetEjercicio').addEventListener('click', () => {
+    abrirModal('¿Reiniciar el ejercicio?',
+      'Se borrarán todas las respuestas registradas hasta ahora. Esta acción no se puede deshacer.',
+      () => {
+        if (firebaseModule && db) {
+          try {
+            const { ref, remove } = firebaseModule;
+            remove(ref(db, 'ejercicio/respuestas'));
+          } catch(e) {}
+        }
+        localStorage.removeItem('ejercicio_respuestas');
+        actualizarEjercicio({});
+      });
+  });
+
+  document.getElementById('resetPalabras').addEventListener('click', () => {
+    abrirModal('¿Limpiar las palabras?',
+      'Se borrarán todas las palabras enviadas hasta ahora. Esta acción no se puede deshacer.',
+      () => {
+        if (firebaseModule && db) {
+          try {
+            const { ref, remove } = firebaseModule;
+            remove(ref(db, 'palabras/lista'));
+          } catch(e) {}
+        }
+        localStorage.removeItem('palabras_lista');
+        actualizarPalabras({});
+      });
+  });
+
+  // ==========================================
+  //   Refresh display de timestamps cada 5s
+  // ==========================================
+  setInterval(() => {
+    // Forzar refresh de timestamps
+    if (document.getElementById('view-palabras').classList.contains('active')) {
+      // re-render solo si hay datos
+      const recentItems = document.querySelectorAll('.recent-item');
+      // se actualizará en próximo onValue
+    }
+  }, 5000);
+
+</script>
+
+</body>
+</html>
