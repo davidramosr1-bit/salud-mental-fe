@@ -32,7 +32,11 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 <style>
-  :root {
+  /* ============================================
+     SISTEMA DE TEMAS
+     ============================================ */
+  :root,
+  [data-theme="noche"] {
     --bg-1: #0a1628;
     --bg-2: #142340;
     --bg-3: #1d3257;
@@ -43,6 +47,29 @@
     --text-light: #f5ebd9;
     --text-soft: #d9c9a8;
     --text-dim: #8a9ab0;
+    --glow-1: rgba(212, 165, 116, 0.08);
+    --glow-2: rgba(201, 130, 107, 0.06);
+    --glow-3: rgba(29, 50, 87, 0.4);
+    --grain-color: rgba(245, 235, 217, 0.02);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Manrope', system-ui, sans-serif;
+  }
+
+  [data-theme="bosque"] {
+    --bg-1: #0e2418;
+    --bg-2: #163a25;
+    --bg-3: #1f5232;
+    --accent-gold: #d4b87a;
+    --accent-gold-light: #e8d29c;
+    --accent-warm: #95b88a;
+    --accent-cream: #ecead0;
+    --text-light: #ecead0;
+    --text-soft: #d2dbb8;
+    --text-dim: #94a894;
+    --glow-1: rgba(212, 184, 122, 0.10);
+    --glow-2: rgba(149, 184, 138, 0.16);
+    --glow-3: rgba(31, 82, 50, 0.55);
+    --grain-color: rgba(236, 234, 208, 0.02);
     --serif: 'Cormorant Garamond', Georgia, serif;
     --sans: 'Manrope', system-ui, sans-serif;
   }
@@ -58,6 +85,7 @@
     color: var(--text-light);
     font-weight: 300;
     letter-spacing: 0.01em;
+    transition: background 0.8s ease, color 0.8s ease;
   }
 
   /* Fondo atmosférico con gradientes radiales suaves */
@@ -66,11 +94,12 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 50% at 20% 30%, rgba(212, 165, 116, 0.08), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 80% 70%, rgba(201, 130, 107, 0.06), transparent 70%),
-      radial-gradient(ellipse 100% 70% at 50% 100%, rgba(29, 50, 87, 0.4), transparent);
+      radial-gradient(ellipse 80% 50% at 20% 30%, var(--glow-1), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 70%, var(--glow-2), transparent 70%),
+      radial-gradient(ellipse 100% 70% at 50% 100%, var(--glow-3), transparent);
     pointer-events: none;
     z-index: 0;
+    transition: opacity 0.8s ease;
   }
 
   body::after {
@@ -78,11 +107,151 @@
     position: fixed;
     inset: 0;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(245, 235, 217, 0.015) 1px, transparent 1px),
-      radial-gradient(circle at 90% 80%, rgba(245, 235, 217, 0.02) 1px, transparent 1px);
+      radial-gradient(circle at 10% 20%, var(--grain-color) 1px, transparent 1px),
+      radial-gradient(circle at 90% 80%, var(--grain-color) 1px, transparent 1px);
     background-size: 60px 60px, 100px 100px;
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* ============================================
+     SELECTOR DE TEMA
+     ============================================ */
+  .theme-switcher {
+    position: fixed;
+    top: 3vh;
+    right: calc(3vw + 120px);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(212, 165, 116, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: opacity 0.4s ease, border-color 0.6s ease;
+  }
+
+  .theme-switcher:hover {
+    border-color: rgba(212, 165, 116, 0.4);
+  }
+
+  .theme-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
+    position: relative;
+  }
+
+  .theme-dot:hover {
+    transform: scale(1.15);
+  }
+
+  .theme-dot.active {
+    border-color: var(--accent-gold-light);
+    transform: scale(1.1);
+  }
+
+  .theme-dot[data-target="noche"] {
+    background: radial-gradient(circle at 30% 30%, #1d3257 0%, #0a1628 70%);
+    box-shadow: 0 0 6px rgba(232, 200, 159, 0.3);
+  }
+
+  .theme-dot[data-target="bosque"] {
+    background: radial-gradient(circle at 30% 30%, #1d4530 0%, #0d1f17 70%);
+    box-shadow: 0 0 6px rgba(138, 168, 130, 0.4);
+  }
+
+  .theme-dot::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .theme-dot:hover::after {
+    opacity: 1;
+  }
+
+  /* ============================================
+     PARTÍCULAS GLOBALES (polen del bosque)
+     ============================================ */
+  .ambient-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  [data-theme="bosque"] .ambient-particles {
+    opacity: 1;
+  }
+
+  .pollen {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 210, 156, 0.95) 0%, rgba(232, 210, 156, 0.5) 40%, transparent 70%);
+    box-shadow: 0 0 8px rgba(232, 210, 156, 0.6), 0 0 16px rgba(232, 210, 156, 0.3);
+    will-change: transform, opacity;
+    top: -20px;
+  }
+
+  @keyframes pollen-fall {
+    0% {
+      transform: translate3d(0, -30px, 0);
+      opacity: 0;
+    }
+    8% { opacity: 1; }
+    50% {
+      transform: translate3d(30px, 50vh, 0);
+    }
+    92% { opacity: 0.85; }
+    100% {
+      transform: translate3d(-20px, 110vh, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pollen-drift {
+    0%, 100% { margin-left: 0; }
+    25% { margin-left: 18px; }
+    50% { margin-left: -10px; }
+    75% { margin-left: 14px; }
+  }
+
+  /* Niebla sutil solo en bosque */
+  .forest-mist {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 90% 35% at 50% 100%, rgba(149, 184, 138, 0.18), transparent 70%),
+      radial-gradient(ellipse 50% 30% at 10% 90%, rgba(149, 184, 138, 0.12), transparent 70%),
+      radial-gradient(ellipse 60% 35% at 85% 85%, rgba(149, 184, 138, 0.10), transparent 70%);
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  [data-theme="bosque"] .forest-mist {
+    opacity: 1;
   }
 
   /* Contenedor principal de slides */
@@ -256,6 +425,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    transition: opacity 1s ease;
   }
   #slide-1 .star {
     position: absolute;
@@ -264,6 +434,9 @@
     background: var(--accent-gold-light);
     border-radius: 50%;
     animation: shimmer 4s ease-in-out infinite;
+  }
+  [data-theme="bosque"] #slide-1 .stars {
+    opacity: 0;
   }
 
   /* === SLIDE 2: DINÁMICA CORPORAL === */
@@ -1096,6 +1269,16 @@
 </head>
 <body>
 
+<!-- Partículas y ambiente global (se activan según tema) -->
+<div class="ambient-particles" id="ambientParticles"></div>
+<div class="forest-mist"></div>
+
+<!-- Selector de tema -->
+<div class="theme-switcher" id="themeSwitcher" title="Cambiar tema visual">
+  <div class="theme-dot active" data-target="noche" data-label="Cielo nocturno"></div>
+  <div class="theme-dot" data-target="bosque" data-label="Bosque sereno"></div>
+</div>
+
 <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
 
 <div class="slides-wrapper" id="slidesWrapper">
@@ -1492,6 +1675,80 @@
       goToSlide(target);
       document.getElementById('slideMenu').classList.remove('open');
     });
+  });
+
+  // ============================================
+  //   SISTEMA DE TEMAS (selector en vivo)
+  // ============================================
+  const TEMA_STORAGE_KEY = 'salud-mental-fe-tema';
+  const temas = ['noche', 'bosque'];
+
+  // Partículas de polen (declaradas antes para uso desde aplicarTema)
+  const ambientContainer = document.getElementById('ambientParticles');
+  const POLEN_COUNT = 35;
+  let polenActivo = false;
+
+  function generarPolen() {
+    if (polenActivo) return;
+    polenActivo = true;
+    ambientContainer.innerHTML = '';
+    for (let i = 0; i < POLEN_COUNT; i++) {
+      const p = document.createElement('div');
+      p.className = 'pollen';
+      const size = 2 + Math.random() * 4; // 2px a 6px
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      const fallDuration = 14 + Math.random() * 18;
+      const driftDuration = 4 + Math.random() * 4;
+      const delay = -Math.random() * fallDuration;
+      p.style.animation =
+        `pollen-fall ${fallDuration}s linear ${delay}s infinite, ` +
+        `pollen-drift ${driftDuration}s ease-in-out ${delay}s infinite`;
+      ambientContainer.appendChild(p);
+    }
+  }
+
+  function limpiarPolen() {
+    polenActivo = false;
+    setTimeout(() => {
+      if (!polenActivo) ambientContainer.innerHTML = '';
+    }, 1600);
+  }
+
+  function aplicarTema(tema) {
+    if (!temas.includes(tema)) tema = 'noche';
+    document.documentElement.setAttribute('data-theme', tema);
+    document.querySelectorAll('.theme-dot').forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.target === tema);
+    });
+    try { localStorage.setItem(TEMA_STORAGE_KEY, tema); } catch (e) {}
+    if (tema === 'bosque') {
+      generarPolen();
+    } else {
+      limpiarPolen();
+    }
+  }
+
+  // Cargar tema guardado o usar el actual del HTML
+  const temaGuardado = (function () {
+    try { return localStorage.getItem(TEMA_STORAGE_KEY); } catch (e) { return null; }
+  })();
+  const temaInicial = temaGuardado || document.documentElement.getAttribute('data-theme') || 'noche';
+  aplicarTema(temaInicial);
+
+  document.querySelectorAll('.theme-dot').forEach(dot => {
+    dot.addEventListener('click', () => aplicarTema(dot.dataset.target));
+  });
+
+  // Atajo de teclado T para alternar
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const target = e.target;
+      if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+      const actual = document.documentElement.getAttribute('data-theme') || 'noche';
+      aplicarTema(actual === 'noche' ? 'bosque' : 'noche');
+    }
   });
 
   // ============================================
