@@ -10,7 +10,7 @@
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-  import { getDatabase, ref, onValue, set, push, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+  import { getDatabase, ref, onValue, set, push, remove, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -25,7 +25,7 @@
 
   // Expose to non-module scripts
   window.__firebase = {
-    initializeApp, getDatabase, ref, onValue, set, push, remove, serverTimestamp,
+    initializeApp, getDatabase, ref, onValue, set, push, remove, serverTimestamp, onDisconnect,
     firebaseConfig
   };
   window.dispatchEvent(new Event('firebase-ready'));
@@ -52,7 +52,7 @@ html, body {
   font-family: var(--sans);
   background: var(--bg-1);
   color: var(--text-light);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.01em;
   overflow-x: hidden;
 }
@@ -104,7 +104,7 @@ h1 .italic {
   color: var(--text-soft);
   line-height: 1.7;
   margin-bottom: 2rem;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 /* === EJERCICIO: 4 escenarios === */
@@ -247,7 +247,7 @@ input[type="text"] {
   color: var(--text-light);
   font-family: var(--sans);
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   border-radius: 8px;
   outline: none;
   transition: all 0.3s ease;
@@ -612,6 +612,14 @@ button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   let firebaseModule = null;
   let firebaseReady = false;
   let firebaseError = false;
+  let eventoActivo = 'default';  // se actualiza desde Firebase
+
+  // ID único del participante (definido temprano para presencia)
+  let participanteId = sessionStorage.getItem('participante_id');
+  if (!participanteId) {
+    participanteId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('participante_id', participanteId);
+  }
 
   function waitForFirebase(callback) {
     if (window.__firebase) callback();
@@ -624,19 +632,43 @@ button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       const app = firebaseModule.initializeApp(firebaseModule.firebaseConfig);
       db = firebaseModule.getDatabase(app);
       firebaseReady = true;
+      // Leer el evento activo (el QR siempre escribe en el evento en curso)
+      const { ref, onValue } = firebaseModule;
+      onValue(ref(db, 'eventoActivo'), (snap) => {
+        const val = snap.val();
+        if (val && typeof val === 'string') {
+          eventoActivo = val;
+          registrarPresencia();  // re-registrar en el evento correcto
+        }
+      });
     } catch (e) {
       console.log('Firebase no inicializado, usando localStorage:', e.message);
       firebaseError = true;
     }
   });
 
-  // ============================================
-  //   ID único del participante (para no duplicar)
-  // ============================================
-  let participanteId = sessionStorage.getItem('participante_id');
-  if (!participanteId) {
-    participanteId = 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('participante_id', participanteId);
+  // Registra que este joven está presente/activo ahora mismo
+  let presenciaRef = null;
+  function registrarPresencia() {
+    if (!firebaseReady || !db) return;
+    try {
+      const { ref, set, onDisconnect, serverTimestamp } = firebaseModule;
+      // Limpiar presencia anterior si cambió de evento
+      if (presenciaRef) {
+        try { set(presenciaRef, null); } catch (e) {}
+      }
+      presenciaRef = ref(db, 'eventos/' + eventoActivo + '/presencia/' + participanteId);
+      set(presenciaRef, { activo: true, desde: serverTimestamp() });
+      // Cuando se desconecte (cierre pestaña, pierda señal), eliminar automáticamente
+      onDisconnect(presenciaRef).remove();
+    } catch (e) {
+      console.log('No se pudo registrar presencia:', e.message);
+    }
+  }
+
+  // Construye la ruta dentro del evento activo
+  function rutaEvento(sub) {
+    return 'eventos/' + eventoActivo + '/' + sub;
   }
 
   // ============================================
@@ -729,7 +761,7 @@ button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       if (firebaseReady) {
         try {
           const { ref, push, set, serverTimestamp } = firebaseModule;
-          const newRef = push(ref(db, 'ejercicio/respuestas'));
+          const newRef = push(ref(db, rutaEvento('ejercicio/respuestas')));
           set(newRef, { ...data, timestamp: serverTimestamp() });
         } catch (e) {
           guardarLocal('ejercicio_respuestas', data);
@@ -781,7 +813,7 @@ button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       if (firebaseReady) {
         try {
           const { ref, push, set, serverTimestamp } = firebaseModule;
-          const newRef = push(ref(db, 'palabras/lista'));
+          const newRef = push(ref(db, rutaEvento('palabras/lista')));
           set(newRef, { ...data, timestamp: serverTimestamp() });
         } catch (e) {
           guardarLocal('palabras_lista', data);
