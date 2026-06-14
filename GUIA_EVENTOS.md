@@ -64,3 +64,23 @@ La presentación ahora tiene **tres temas** (selector arriba a la derecha, o tec
 - **Cielo nocturno** (azul oscuro) — el original.
 
 La elección se recuerda automáticamente para la próxima vez.
+
+## Contraseña de acceso
+
+La presentación y el dashboard piden una contraseña al abrirse. La contraseña actual es:
+
+**iglesia2026**
+
+Para cambiarla, abre el archivo `index.html` (o `dashboard.html`) y busca cerca del inicio la línea:
+
+```
+const CLAVE_ACCESO = "iglesia2026";
+```
+
+Cambia el texto entre comillas por la nueva contraseña y guarda. Recuerda hacerlo en ambos archivos si quieres la misma clave en los dos.
+
+Nota: la contraseña solo se pide una vez por sesión del navegador (mientras no se cierre del todo). La vista de los jóvenes (`joven.html`) NO pide contraseña, para que puedan participar libremente escaneando el QR.
+
+## Temas sincronizados
+
+Ahora el tema visual que eliges en la presentación (crema, bosque o noche) se aplica automáticamente al dashboard y a los celulares de los jóvenes. Solo cambia el tema una vez en la presentación y todo lo demás se adapta.

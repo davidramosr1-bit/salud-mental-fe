@@ -4,6 +4,17 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Salud Mental en la Fe — Participa</title>
+<script>
+  // Tema inicial (se sincroniza luego desde Firebase)
+  (function() {
+    try {
+      var t = localStorage.getItem('salud-mental-fe-tema') || 'crema';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'crema');
+    }
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -31,7 +42,8 @@
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
 <style>
-:root {
+:root,
+[data-theme="bosque"] {
   --bg-1: #0e2418;
   --bg-2: #163a25;
   --bg-3: #1f5232;
@@ -43,6 +55,38 @@
   --text-soft: #d2dbb8;
   --text-dim: #94a894;
   --success: #7ce085;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', system-ui, sans-serif;
+}
+
+[data-theme="noche"] {
+  --bg-1: #0a1628;
+  --bg-2: #142340;
+  --bg-3: #1d3257;
+  --accent-gold: #d4a574;
+  --accent-gold-light: #e8c89f;
+  --accent-warm: #c9826b;
+  --accent-cream: #f5ebd9;
+  --text-light: #f5ebd9;
+  --text-soft: #d9c9a8;
+  --text-dim: #8a9ab0;
+  --success: #4ade80;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Manrope', system-ui, sans-serif;
+}
+
+[data-theme="crema"] {
+  --bg-1: #f4efe3;
+  --bg-2: #ece4d2;
+  --bg-3: #e2d6bd;
+  --accent-gold: #a67c43;
+  --accent-gold-light: #8a6532;
+  --accent-warm: #7d9168;
+  --accent-cream: #5c4a2e;
+  --text-light: #3a3020;
+  --text-soft: #5c5238;
+  --text-dim: #8a7d63;
+  --success: #4f8a3f;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', system-ui, sans-serif;
 }
@@ -639,6 +683,14 @@ button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         if (val && typeof val === 'string') {
           eventoActivo = val;
           registrarPresencia();  // re-registrar en el evento correcto
+        }
+      });
+      // Sincronizar el tema visual con el que eligieron las hermanas
+      onValue(ref(db, 'temaActivo'), (snap) => {
+        const t = snap.val();
+        if (t && typeof t === 'string') {
+          document.documentElement.setAttribute('data-theme', t);
+          try { localStorage.setItem('salud-mental-fe-tema', t); } catch (e) {}
         }
       });
     } catch (e) {
