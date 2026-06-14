@@ -59,6 +59,10 @@
   --danger: #e89090;
   --surface: rgba(255, 255, 255, 0.04);
   --surface-strong: rgba(255, 255, 255, 0.06);
+  --page-glow:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 184, 122, 0.08), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.12), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 100% 50%, rgba(31, 82, 50, 0.30), transparent 70%);
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', system-ui, sans-serif;
 }
@@ -79,6 +83,10 @@
   --danger: #f87171;
   --surface: rgba(255, 255, 255, 0.04);
   --surface-strong: rgba(255, 255, 255, 0.06);
+  --page-glow:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 184, 122, 0.08), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.12), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 100% 50%, rgba(31, 82, 50, 0.30), transparent 70%);
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', system-ui, sans-serif;
 }
@@ -99,6 +107,10 @@
   --danger: #b5524a;
   --surface: rgba(255, 252, 245, 0.7);
   --surface-strong: rgba(255, 253, 248, 0.85);
+  --page-glow:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 175, 110, 0.18), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.16), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 100% 50%, rgba(212, 175, 110, 0.12), transparent 70%);
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Manrope', system-ui, sans-serif;
 }
@@ -112,9 +124,7 @@ html, body {
 }
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 184, 122, 0.08), transparent 70%),
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.12), transparent 70%),
-    radial-gradient(ellipse 70% 40% at 100% 50%, rgba(31, 82, 50, 0.30), transparent 70%),
+    var(--page-glow),
     var(--bg-1);
   overflow-x: hidden;
 }
