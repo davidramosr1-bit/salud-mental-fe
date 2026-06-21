@@ -1239,60 +1239,6 @@ body {
 <body>
 
 <!-- ========== PANTALLA DE ACCESO ========== -->
-<div id="lockScreen" style="position:fixed; inset:0; z-index:9999; background:var(--bg-1); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:2rem;">
-  <div style="text-align:center; max-width:420px; width:100%;">
-    <div style="font-family:var(--serif); font-style:italic; color:var(--accent-gold); font-size:1rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:1rem;">Panel de las psicólogas</div>
-    <h1 style="font-family:var(--serif); font-size:2.2rem; color:var(--text-light); font-weight:400; margin-bottom:0.5rem;">Acceso restringido</h1>
-    <p style="font-family:var(--sans); color:var(--text-dim); font-size:0.95rem; margin-bottom:2rem; font-weight:400;">Ingresa la contraseña para ver el panel.</p>
-    <input type="password" id="lockInput" placeholder="Contraseña" autocomplete="current-password"
-      style="width:100%; background:var(--bg-2); color:var(--text-light); border:1px solid rgba(212,184,122,0.3); border-radius:10px; padding:0.9rem 1.1rem; font-family:var(--sans); font-size:1rem; outline:none; text-align:center; letter-spacing:0.1em;">
-    <div id="lockError" style="color:var(--danger); font-family:var(--serif); font-style:italic; font-size:0.9rem; margin-top:0.8rem; min-height:1.2rem; opacity:0;">Contraseña incorrecta</div>
-    <button id="lockBtn"
-      style="margin-top:1rem; width:100%; background:rgba(212,184,122,0.15); border:1px solid var(--accent-gold); color:var(--accent-cream); border-radius:100px; padding:0.9rem; font-family:var(--serif); font-style:italic; font-size:1.05rem; cursor:pointer; transition:all 0.3s;">Entrar</button>
-  </div>
-</div>
-
-<script>
-  // ============================================
-  //   CONTRASEÑA DEL PANEL
-  //   👉 Para cambiarla, edita SOLO la línea de abajo:
-  // ============================================
-  const CLAVE_ACCESO = "iglesia2026";
-
-  (function() {
-    const lock = document.getElementById('lockScreen');
-    const input = document.getElementById('lockInput');
-    const btn = document.getElementById('lockBtn');
-    const err = document.getElementById('lockError');
-    const YA_ENTRO_KEY = 'salud-mental-fe-acceso';
-
-    // Si ya entró en esta sesión, no volver a pedir
-    try {
-      if (sessionStorage.getItem(YA_ENTRO_KEY) === 'ok') {
-        lock.style.display = 'none';
-      }
-    } catch (e) {}
-
-    function intentar() {
-      if (input.value === CLAVE_ACCESO) {
-        try { sessionStorage.setItem(YA_ENTRO_KEY, 'ok'); } catch (e) {}
-        lock.style.opacity = '0';
-        lock.style.transition = 'opacity 0.4s ease';
-        setTimeout(() => { lock.style.display = 'none'; }, 400);
-      } else {
-        err.style.opacity = '1';
-        input.value = '';
-        input.focus();
-        setTimeout(() => { err.style.opacity = '0'; }, 2500);
-      }
-    }
-
-    btn.addEventListener('click', intentar);
-    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') intentar(); });
-    setTimeout(() => input.focus(), 200);
-  })();
-</script>
-
 <header class="dashboard-header">
   <div>
     <div class="dashboard-subtitle">Panel de las psicólogas</div>
@@ -1435,6 +1381,11 @@ body {
   <div class="modal">
     <h3 id="modalTitle">¿Confirmar?</h3>
     <p id="modalText">Esta acción no se puede deshacer.</p>
+    <div id="modalPassWrap" style="display:none; margin:0.2rem 0 0.4rem;">
+      <input type="password" id="modalPassInput" placeholder="Contraseña para borrar" autocomplete="off"
+        style="width:100%; box-sizing:border-box; background:var(--surface-input, var(--bg-2)); color:var(--text-light); border:1px solid rgba(212,184,122,0.35); border-radius:10px; padding:0.8rem 1rem; font-family:var(--sans); font-size:1rem; outline:none; text-align:center; letter-spacing:0.08em;">
+      <div id="modalPassError" style="color:var(--danger); font-family:var(--serif); font-style:italic; font-size:0.88rem; margin-top:0.5rem; min-height:1.1rem; opacity:0;">Contraseña incorrecta</div>
+    </div>
     <div class="modal-actions">
       <button class="action-btn" id="modalCancel">Cancelar</button>
       <button class="action-btn danger" id="modalConfirm">Confirmar</button>
@@ -1889,28 +1840,68 @@ body {
   // ==========================================
   const modal = document.getElementById('modal');
   let pendingAction = null;
+  let pendingRequierePass = false;
 
-  function abrirModal(titulo, texto, accion) {
+  // ============================================
+  //   CONTRASEÑA PARA BORRAR DATOS
+  //   👉 Para cambiarla, edita SOLO la línea de abajo:
+  // ============================================
+  const CLAVE_BORRADO = "iglesia2026";
+
+  function abrirModal(titulo, texto, accion, requierePass) {
     document.getElementById('modalTitle').textContent = titulo;
     document.getElementById('modalText').textContent = texto;
     pendingAction = accion;
+    pendingRequierePass = !!requierePass;
+
+    const wrap = document.getElementById('modalPassWrap');
+    const inp = document.getElementById('modalPassInput');
+    const errP = document.getElementById('modalPassError');
+    if (pendingRequierePass) {
+      wrap.style.display = 'block';
+      inp.value = '';
+      errP.style.opacity = '0';
+      setTimeout(() => inp.focus(), 250);
+    } else {
+      wrap.style.display = 'none';
+    }
     modal.classList.add('show');
   }
 
   // Permite que otros módulos (gestión de eventos) usen el mismo modal
   window.__setPendingAction = function(accion) {
     pendingAction = accion;
+    pendingRequierePass = false;
+    document.getElementById('modalPassWrap').style.display = 'none';
   };
 
   document.getElementById('modalCancel').addEventListener('click', () => {
     modal.classList.remove('show');
     pendingAction = null;
+    pendingRequierePass = false;
   });
 
   document.getElementById('modalConfirm').addEventListener('click', () => {
+    if (pendingRequierePass) {
+      const inp = document.getElementById('modalPassInput');
+      const errP = document.getElementById('modalPassError');
+      if (inp.value !== CLAVE_BORRADO) {
+        errP.style.opacity = '1';
+        inp.value = '';
+        inp.focus();
+        setTimeout(() => { errP.style.opacity = '0'; }, 2500);
+        return;
+      }
+    }
     if (pendingAction) pendingAction();
     modal.classList.remove('show');
     pendingAction = null;
+    pendingRequierePass = false;
+  });
+
+  // Permite confirmar con Enter desde el campo de contraseña
+  document.getElementById('modalPassInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('modalConfirm').click();
   });
 
   document.getElementById('resetEjercicio').addEventListener('click', () => {
@@ -1925,7 +1916,7 @@ body {
         }
         localStorage.removeItem('ejercicio_respuestas');
         actualizarEjercicio({});
-      });
+      }, true);
   });
 
   document.getElementById('resetPalabras').addEventListener('click', () => {
@@ -1940,7 +1931,7 @@ body {
         }
         localStorage.removeItem('palabras_lista');
         actualizarPalabras({});
-      });
+      }, true);
   });
 
   // ==========================================

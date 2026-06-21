@@ -1419,59 +1419,6 @@
 <body>
 
 <!-- ========== PANTALLA DE ACCESO ========== -->
-<div id="lockScreen" style="position:fixed; inset:0; z-index:99999; background:var(--bg-1); display:flex; align-items:center; justify-content:center; flex-direction:column; padding:2rem;">
-  <div style="text-align:center; max-width:420px; width:100%;">
-    <div style="font-family:var(--serif); font-style:italic; color:var(--accent-gold); font-size:1rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:1rem;">Iglesia de Dios · Jóvenes</div>
-    <h1 style="font-family:var(--serif); font-size:2.2rem; color:var(--text-light); font-weight:400; margin-bottom:0.5rem;">La salud mental en la fe</h1>
-    <p style="font-family:var(--sans); color:var(--text-dim); font-size:0.95rem; margin-bottom:2rem; font-weight:400;">Ingresa la contraseña para iniciar la presentación.</p>
-    <input type="password" id="lockInput" placeholder="Contraseña" autocomplete="current-password"
-      style="width:100%; background:var(--bg-2); color:var(--text-light); border:1px solid rgba(212,184,122,0.3); border-radius:10px; padding:0.9rem 1.1rem; font-family:var(--sans); font-size:1rem; outline:none; text-align:center; letter-spacing:0.1em;">
-    <div id="lockError" style="color:#e89090; font-family:var(--serif); font-style:italic; font-size:0.9rem; margin-top:0.8rem; min-height:1.2rem; opacity:0;">Contraseña incorrecta</div>
-    <button id="lockBtn"
-      style="margin-top:1rem; width:100%; background:rgba(212,184,122,0.15); border:1px solid var(--accent-gold); color:var(--accent-cream); border-radius:100px; padding:0.9rem; font-family:var(--serif); font-style:italic; font-size:1.05rem; cursor:pointer; transition:all 0.3s;">Entrar</button>
-  </div>
-</div>
-
-<script>
-  // ============================================
-  //   CONTRASEÑA DE LA PRESENTACIÓN
-  //   👉 Para cambiarla, edita SOLO la línea de abajo:
-  // ============================================
-  const CLAVE_ACCESO = "iglesia2026";
-
-  (function() {
-    const lock = document.getElementById('lockScreen');
-    const input = document.getElementById('lockInput');
-    const btn = document.getElementById('lockBtn');
-    const err = document.getElementById('lockError');
-    const YA_ENTRO_KEY = 'salud-mental-fe-acceso';
-
-    try {
-      if (sessionStorage.getItem(YA_ENTRO_KEY) === 'ok') {
-        lock.style.display = 'none';
-      }
-    } catch (e) {}
-
-    function intentar() {
-      if (input.value === CLAVE_ACCESO) {
-        try { sessionStorage.setItem(YA_ENTRO_KEY, 'ok'); } catch (e) {}
-        lock.style.opacity = '0';
-        lock.style.transition = 'opacity 0.4s ease';
-        setTimeout(() => { lock.style.display = 'none'; }, 400);
-      } else {
-        err.style.opacity = '1';
-        input.value = '';
-        input.focus();
-        setTimeout(() => { err.style.opacity = '0'; }, 2500);
-      }
-    }
-
-    btn.addEventListener('click', intentar);
-    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') intentar(); });
-    setTimeout(() => input.focus(), 200);
-  })();
-</script>
-
 <!-- Partículas y ambiente global (se activan según tema) -->
 <div class="ambient-particles" id="ambientParticles"></div>
 <div class="forest-mist"></div>
