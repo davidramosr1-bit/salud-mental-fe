@@ -17,7 +17,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -62,8 +62,8 @@
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 184, 122, 0.10), transparent 70%),
     radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.15), transparent 70%),
     radial-gradient(ellipse 70% 40% at 100% 30%, rgba(31, 82, 50, 0.35), transparent 70%);
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Manrope', system-ui, sans-serif;
+  --serif: 'Inter', system-ui, -apple-system, sans-serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 [data-theme="noche"] {
@@ -85,8 +85,8 @@
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 165, 116, 0.10), transparent 70%),
     radial-gradient(ellipse 90% 60% at 50% 100%, rgba(201, 130, 107, 0.12), transparent 70%),
     radial-gradient(ellipse 70% 40% at 100% 30%, rgba(29, 50, 87, 0.35), transparent 70%);
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Manrope', system-ui, sans-serif;
+  --serif: 'Inter', system-ui, -apple-system, sans-serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 [data-theme="crema"] {
@@ -108,8 +108,8 @@
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 175, 110, 0.18), transparent 70%),
     radial-gradient(ellipse 90% 60% at 50% 100%, rgba(149, 184, 138, 0.16), transparent 70%),
     radial-gradient(ellipse 70% 40% at 100% 30%, rgba(212, 175, 110, 0.12), transparent 70%);
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Manrope', system-ui, sans-serif;
+  --serif: 'Inter', system-ui, -apple-system, sans-serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
@@ -126,6 +126,12 @@ body {
     var(--page-glow),
     var(--bg-1);
   padding-bottom: 4rem;
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 .container {
   max-width: 500px;
@@ -151,7 +157,7 @@ body {
 h1 {
   font-family: var(--serif);
   font-size: 2.4rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.1;
   color: var(--text-light);
   letter-spacing: -0.01em;
